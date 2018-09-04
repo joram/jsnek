@@ -15,6 +15,7 @@ const (
 
 type  Responsibility  interface  {
 	decision(*SnakeRequest) int
+	taunt() string
 }
 var (
 	responsibilities = []Responsibility{
@@ -62,7 +63,10 @@ func Move(res http.ResponseWriter, req *http.Request) {
 	for _, r := range responsibilities {
 		choice := r.decision(&sr)
 		if choice != UNKNOWN {
-			respond(res, MoveResponse{Move: directionStrings[choice]})
+			respond(res, MoveResponse{
+				Move: directionStrings[choice],
+				Taunt: r.taunt(),
+			})
 			return
 		}
 	}

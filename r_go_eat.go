@@ -1,9 +1,11 @@
 package main
 
-import "fmt"
-
 type GoEatOrthogonal struct {
 	hungryHealth int
+}
+
+func (ge GoEatOrthogonal) Taunt() string {
+	return "EATING"
 }
 
 func (ge GoEatOrthogonal) decision(sr *SnakeRequest) int {

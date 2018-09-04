@@ -2,6 +2,10 @@ package main
 
 type OnlyOneChoice struct {}
 
+func (ge OnlyOneChoice) Taunt() string {
+	return "ONLY ONE OPTION"
+}
+
 func (ooc OnlyOneChoice) decision(sr *SnakeRequest) int {
 	// if there is only one choice, return that choice
 	choices := sr.MyEmptyAdjacents()

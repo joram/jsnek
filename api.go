@@ -41,6 +41,7 @@ type StartResponse struct {
 
 type MoveResponse struct {
 	Move string `json:"move"`
+	Taunt string `json:"taunt"`
 }
 
 func DecodeSnakeRequest(req *http.Request, decoded *SnakeRequest) error {
