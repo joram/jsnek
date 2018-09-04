@@ -22,6 +22,7 @@ var (
 		OnlyOneChoice{},
 		// ONLY ONE NOT THREATENED CHOICE
 		// HUNGRY (health level?) GO FOR FOOD
+		GoEatOrthogonal{25},
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
@@ -33,6 +34,7 @@ var (
 		DOWN: "down",
 		LEFT: "left",
 		RIGHT: "right",
+		UNKNOWN: "WFT!",
 	}
 )
 
