@@ -45,3 +45,36 @@ func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	}
 	return &closestFood, nil
 }
+
+
+func closest(c Coord, coords []Coord) Coord {
+	foundFood := false
+	closestFood := Coord{}
+	closestDist := float64(-1)
+	for _, food := range coords {
+		dist := c.OrthogonalDistance(food)
+		if !foundFood || dist < closestDist {
+			closestFood = food
+			closestDist = dist
+			foundFood = true
+		}
+	}
+	return closestFood
+}
+
+func (b *Board) OrderedClosestFood(c Coord) []Coord {
+	toSort := b.Food
+	sorted := []Coord{}
+	for len(toSort) > 0 {
+		nextClosestFood := closest(c, toSort)
+		sorted = append(sorted, nextClosestFood)
+		newToSort := []Coord{}
+		for _, ts := range toSort {
+			if !ts.Equal(nextClosestFood) {
+				newToSort = append(newToSort, ts)
+			}
+		}
+		toSort = newToSort
+	}
+	return sorted
+}

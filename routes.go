@@ -64,6 +64,13 @@ func Move(res http.ResponseWriter, req *http.Request) {
 	for _, r := range responsibilities {
 		choice := r.decision(&sr)
 		if choice != UNKNOWN {
+			target, err := sr.You.Head().Offset(choice)
+			if err != nil {
+				continue
+			}
+			if !sr.Board.IsEmpty(*target){
+				continue
+			}
 			respond(res, MoveResponse{
 				Move: directionStrings[choice],
 				Taunt: r.taunt(),
