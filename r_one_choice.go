@@ -2,7 +2,7 @@ package main
 
 type OnlyOneChoice struct {}
 
-func (ge OnlyOneChoice) Taunt() string {
+func (ge OnlyOneChoice) taunt() string {
 	return "ONLY ONE OPTION"
 }
 

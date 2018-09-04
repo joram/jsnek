@@ -4,7 +4,7 @@ type GoEatOrthogonal struct {
 	hungryHealth int
 }
 
-func (ge GoEatOrthogonal) Taunt() string {
+func (ge GoEatOrthogonal) taunt() string {
 	return "EATING"
 }
 

@@ -8,7 +8,7 @@ type ValidDirection struct {
 
 }
 
-func (ge ValidDirection) Taunt() string {
+func (ge ValidDirection) taunt() string {
 	return "ANY VALID DIRECTION"
 }
 
