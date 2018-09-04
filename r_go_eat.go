@@ -9,7 +9,17 @@ func (ge GoEatOrthogonal) taunt() string {
 }
 
 func (ge GoEatOrthogonal) decision(sr *SnakeRequest) int {
-	if sr.You.Health > ge.hungryHealth {
+	longestSnakeLength := -1
+	for _, snake := range sr.Board.Snakes {
+		if snake.ID != sr.You.ID {
+			l := len(snake.Body)
+			if l > longestSnakeLength {
+				longestSnakeLength = l
+			}
+		}
+	}
+
+	if sr.You.Health > ge.hungryHealth && len(sr.You.Body) >= longestSnakeLength{
 		return UNKNOWN
 	}
 
