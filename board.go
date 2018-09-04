@@ -3,7 +3,7 @@ package main
 import "errors"
 
 func (b *Board) IsEmpty(c Coord) bool {
-	if c.X >=b.Width {
+	if c.X >= b.Width {
 		return false
 	}
 	if c.Y >= b.Height {
@@ -45,7 +45,6 @@ func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	}
 	return &closestFood, nil
 }
-
 
 func closest(c Coord, coords []Coord) Coord {
 	foundFood := false

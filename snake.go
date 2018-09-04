@@ -1,6 +1,5 @@
 package main
 
-
 func (s *Snake) Head() Coord {
 	return s.Body[0]
 }

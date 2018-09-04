@@ -1,6 +1,6 @@
 package main
 
-type OnlyOneChoice struct {}
+type OnlyOneChoice struct{}
 
 func (ge OnlyOneChoice) taunt() string {
 	return "ONLY ONE OPTION"
@@ -14,6 +14,3 @@ func (ooc OnlyOneChoice) decision(sr *SnakeRequest) int {
 	}
 	return UNKNOWN
 }
-
-
-
