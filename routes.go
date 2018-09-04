@@ -25,7 +25,7 @@ var (
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
-		// ANY NON SOLID MOVE
+		ValidDirection{},
 	}
 	directions = []int{UP, DOWN, LEFT, RIGHT}
 	directionStrings = map[int]string{
