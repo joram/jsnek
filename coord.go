@@ -14,6 +14,22 @@ func (c Coord) Adjacent() []Coord {
 	}
 }
 
+func (c Coord) SurroundingCoords() []Coord {
+	return []Coord{
+		{c.X + 0, c.Y + 1},
+		{c.X + 0, c.Y - 1},
+		{c.X + 1, c.Y + 0},
+		{c.X - 1, c.Y + 0},
+
+		{c.X + 1, c.Y + 1},
+		{c.X - 1, c.Y - 1},
+		{c.X + 1, c.Y - 1},
+		{c.X - 1, c.Y + 1},
+
+	}
+
+}
+
 func (c Coord) Equal(other Coord) bool {
 	return c.X == other.X && c.Y == other.Y
 }

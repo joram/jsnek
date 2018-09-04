@@ -27,6 +27,7 @@ var (
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
+		TrapFood{},
 		ValidDirection{},
 	}
 	directions = []int{UP, DOWN, LEFT, RIGHT}

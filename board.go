@@ -1,5 +1,6 @@
 package main
 
+import "errors"
 
 func (b *Board) IsEmpty(c Coord) bool {
 	if c.X >=b.Width {
@@ -23,4 +24,24 @@ func (b *Board) IsEmpty(c Coord) bool {
 		}
 	}
 	return true
+}
+
+func (b *Board) ClosestFood(c Coord) (*Coord, error) {
+	foundFood := false
+	closestFood := Coord{}
+	closestDist := float64(-1)
+
+	for _, food := range b.Food {
+		dist := c.OrthogonalDistance(food)
+		if !foundFood || dist < closestDist {
+			closestFood = food
+			closestDist = dist
+			foundFood = true
+		}
+	}
+
+	if !foundFood {
+		return nil, errors.New("no food")
+	}
+	return &closestFood, nil
 }
