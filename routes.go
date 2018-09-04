@@ -13,6 +13,9 @@ const (
 	UNKNOWN
 )
 
+type  Responsibility  interface  {
+	decision(*SnakeRequest) int
+}
 var (
 	responsibilities = []Responsibility{
 		// NO OPTION
@@ -22,6 +25,7 @@ var (
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
+		// ANY NON SOLID MOVE
 	}
 	directionStrings = map[int]string{
 		UP: "up",
@@ -30,19 +34,6 @@ var (
 		RIGHT: "right",
 	}
 )
-
-type  Responsibility  interface  {
-	decision(sr *SnakeRequest) int
-}
-
-type OnlyOneChoice struct {}
-
-func (ooc OnlyOneChoice) decision(sr *SnakeRequest) int {
-	// if there is only one choice, return that choice
-
-	// otherwise
-	return UNKNOWN
-}
 
 
 func Start(res http.ResponseWriter, req *http.Request) {
@@ -68,8 +59,7 @@ func Move(res http.ResponseWriter, req *http.Request) {
 	for _, r := range responsibilities {
 		choice := r.decision(&sr)
 		if choice != UNKNOWN {
-			direction := directionStrings[choice]
-			respond(res, MoveResponse{Move: direction})
+			respond(res, MoveResponse{Move: directionStrings[choice]})
 			return
 		}
 	}
