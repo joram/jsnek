@@ -78,7 +78,7 @@ func createMockSnakeRequest() SnakeRequest {
 func TestDecodeSnakeRequest(t *testing.T) {
 	expected := SnakeRequest{}
 	req := requestWithBody(mockReq)
-	
+
 	result := SnakeRequest{}
 	err := DecodeSnakeRequest(req, &result)
 	if assert.NoError(t, err) {

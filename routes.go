@@ -27,6 +27,7 @@ var (
 		// EAT THEIR LUNCH (force them to starve)
 		// ANY NON SOLID MOVE
 	}
+	directions = []int{UP, DOWN, LEFT, RIGHT}
 	directionStrings = map[int]string{
 		UP: "up",
 		DOWN: "down",
