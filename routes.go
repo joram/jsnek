@@ -13,10 +13,11 @@ const (
 	UNKNOWN
 )
 
-type  Responsibility  interface  {
+type Responsibility interface {
 	decision(*SnakeRequest) int
 	taunt() string
 }
+
 var (
 	responsibilities = []Responsibility{
 		// NO OPTION
@@ -30,16 +31,15 @@ var (
 		TrapFood{},
 		ValidDirection{},
 	}
-	directions = []int{UP, DOWN, LEFT, RIGHT}
+	directions       = []int{UP, DOWN, LEFT, RIGHT}
 	directionStrings = map[int]string{
-		UP: "up",
-		DOWN: "down",
-		LEFT: "left",
-		RIGHT: "right",
+		UP:      "up",
+		DOWN:    "down",
+		LEFT:    "left",
+		RIGHT:   "right",
 		UNKNOWN: "WFT!",
 	}
 )
-
 
 func Start(res http.ResponseWriter, req *http.Request) {
 	decoded := SnakeRequest{}
@@ -68,11 +68,11 @@ func Move(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				continue
 			}
-			if !sr.Board.IsEmpty(*target){
+			if !sr.Board.IsEmpty(*target) {
 				continue
 			}
 			respond(res, MoveResponse{
-				Move: directionStrings[choice],
+				Move:  directionStrings[choice],
 				Taunt: r.taunt(),
 			})
 			return
