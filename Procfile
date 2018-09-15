@@ -1,1 +1,1 @@
-web: ./scripts/run
+web: jsnek
