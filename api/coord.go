@@ -1,8 +1,8 @@
 package api
 
 import (
-	"math"
 	"errors"
+	"math"
 )
 
 func (c Coord) Adjacent() []Coord {
@@ -25,7 +25,6 @@ func (c Coord) SurroundingCoords() []Coord {
 		{c.X - 1, c.Y - 1},
 		{c.X + 1, c.Y - 1},
 		{c.X - 1, c.Y + 1},
-
 	}
 
 }
@@ -37,25 +36,33 @@ func (c Coord) Equal(other Coord) bool {
 func (c Coord) DirectionTo(other Coord) int {
 	xd := other.X - c.X
 	yd := other.Y - c.Y
-	if xd == +0 && yd == -1 { return UP }
-	if xd == +0 && yd == +1 { return DOWN }
-	if xd == -1 && yd == +0 { return LEFT }
-	if xd == +1 && yd == +0 { return RIGHT }
+	if xd == +0 && yd == -1 {
+		return UP
+	}
+	if xd == +0 && yd == +1 {
+		return DOWN
+	}
+	if xd == -1 && yd == +0 {
+		return LEFT
+	}
+	if xd == +1 && yd == +0 {
+		return RIGHT
+	}
 	return UNKNOWN
 }
 
 func (c Coord) Offset(d int) (*Coord, error) {
 	if d == UP {
-		return &Coord{c.X, c.Y-1}, nil
+		return &Coord{c.X, c.Y - 1}, nil
 	}
 	if d == DOWN {
-		return &Coord{c.X, c.Y+1}, nil
+		return &Coord{c.X, c.Y + 1}, nil
 	}
 	if d == LEFT {
-		return &Coord{c.X-1, c.Y}, nil
+		return &Coord{c.X - 1, c.Y}, nil
 	}
 	if d == RIGHT {
-		return &Coord{c.X+1, c.Y}, nil
+		return &Coord{c.X + 1, c.Y}, nil
 	}
 	return nil, errors.New("not a valid direction")
 }

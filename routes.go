@@ -35,7 +35,6 @@ var (
 
 )
 
-
 func Start(res http.ResponseWriter, req *http.Request) {
 	decoded := api.SnakeRequest{}
 	err := api.DecodeSnakeRequest(req, &decoded)

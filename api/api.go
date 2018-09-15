@@ -49,7 +49,7 @@ type StartResponse struct {
 }
 
 type MoveResponse struct {
-	Move string `json:"move"`
+	Move  string `json:"move"`
 	Taunt string `json:"taunt"`
 }
 

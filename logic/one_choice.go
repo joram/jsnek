@@ -2,7 +2,7 @@ package logic
 
 import "github.com/joram/jsnek/api"
 
-type OnlyOneChoice struct {}
+type OnlyOneChoice struct{}
 
 func (ge OnlyOneChoice) Taunt() string {
 	return "ONLY ONE OPTION"
@@ -16,6 +16,3 @@ func (ooc OnlyOneChoice) Decision(sr *api.SnakeRequest) int {
 	}
 	return api.UNKNOWN
 }
-
-
-

@@ -27,7 +27,7 @@ func (ge TrapFood) Decision(sr *api.SnakeRequest) int {
 	orderedFood := sr.Board.OrderedClosestFood(sr.You.Head())
 
 	for _, food := range orderedFood {
-		if ge.isHoneyPotted(sr, food){
+		if ge.isHoneyPotted(sr, food) {
 			continue
 		}
 		coords := food.SurroundingCoords()

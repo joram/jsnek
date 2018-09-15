@@ -7,7 +7,6 @@ import (
 )
 
 type ValidDirection struct {
-
 }
 
 func (ge ValidDirection) Taunt() string {
