@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	responsibilities = []logic.Responsibility{
+	logics = []logic.Responsibility{
 		// NO OPTION
 		logic.OnlyOneChoice{},
 		// ONLY ONE NOT THREATENED CHOICE
@@ -56,24 +56,24 @@ func Move(res http.ResponseWriter, req *http.Request) {
 		log.Printf("Bad move request: %v", err)
 	}
 
-	for _, r := range responsibilities {
-		choice := r.Decision(&sr)
+	for _, l := range logics {
+		choice := l.Decision(&sr)
 		okChoice := true
 		for _, filter := range decisionFilters {
 			ok, _ := filter.Allowed(choice, &sr)
 			if !ok {
-				fmt.Printf("%s %s", directionStrings[choice], filter.Description())
+				fmt.Printf("%s %s\n", directionStrings[choice], filter.Description())
 				okChoice = false
 				break
 			}
 		}
 		if !okChoice {
-			break
+			continue
 		}
 		fmt.Sprintf("%s\n", directionStrings[choice])
 		respond(res, api.MoveResponse{
-			Move: directionStrings[choice],
-			Taunt: r.Taunt(),
+			Move:  directionStrings[choice],
+			Taunt: l.Taunt(),
 		})
 		return
 	}
