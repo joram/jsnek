@@ -6,6 +6,7 @@ import (
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/logic"
 	"github.com/joram/jsnek/filters"
+	"fmt"
 )
 
 var (
@@ -57,10 +58,11 @@ func Move(res http.ResponseWriter, req *http.Request) {
 
 	for _, r := range responsibilities {
 		choice := r.Decision(&sr)
-		okChoice := false
+		okChoice := true
 		for _, filter := range decisionFilters {
 			ok, _ := filter.Allowed(choice, &sr)
 			if !ok {
+				fmt.Printf("%s %s", directionStrings[choice], filter.Description())
 				okChoice = false
 				break
 			}
@@ -68,6 +70,7 @@ func Move(res http.ResponseWriter, req *http.Request) {
 		if !okChoice {
 			break
 		}
+		fmt.Sprintf("%s\n", directionStrings[choice])
 		respond(res, api.MoveResponse{
 			Move: directionStrings[choice],
 			Taunt: r.Taunt(),
