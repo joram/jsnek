@@ -1,4 +1,6 @@
-package main
+package logic
+
+import "github.com/joram/jsnek/api"
 
 import (
 	"testing"
@@ -7,15 +9,15 @@ import (
 
 func TestOnlyOneChoice(t *testing.T) {
 	ooc := OnlyOneChoice{}
-	sr := SnakeRequest{
-		You:Snake{
-			Body:[]Coord{{2,2}},
+	sr := api.SnakeRequest{
+		You:api.Snake{
+			Body:[]api.Coord{{2,2}},
 		},
 
-		Board:Board{
+		Board:api.Board{
 			Width:5,
 			Height:5,
-			Snakes: []Snake{{Body:[]Coord{
+			Snakes: []api.Snake{{Body:[]api.Coord{
 				{1,2},
 				{1,3},
 				{2,3},
@@ -25,5 +27,5 @@ func TestOnlyOneChoice(t *testing.T) {
 		},
 	}
 	d := ooc.decision(&sr)
-	assert.Equal(t, d, UP)
+	assert.Equal(t, d, api.UP)
 }

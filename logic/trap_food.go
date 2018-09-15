@@ -1,4 +1,6 @@
-package main
+package logic
+
+import "github.com/joram/jsnek/api"
 
 import "math/rand"
 
@@ -6,13 +8,13 @@ type TrapFood struct {
 	hungryHealth int
 }
 
-func (ge TrapFood) taunt() string {
+func (ge TrapFood) Taunt() string {
 	return "ITS A TARP!"
 }
 
-func (ge TrapFood) isHoneyPotted(sr *SnakeRequest, food Coord) bool {
+func (ge TrapFood) isHoneyPotted(sr *api.SnakeRequest, food api.Coord) bool {
 	coords := food.SurroundingCoords()
-	toFill := []Coord{}
+	toFill := []api.Coord{}
 	for _, coord := range coords {
 		if sr.Board.IsEmpty(coord) {
 			toFill = append(toFill, coord)
@@ -21,7 +23,7 @@ func (ge TrapFood) isHoneyPotted(sr *SnakeRequest, food Coord) bool {
 	return len(toFill) <= 2
 }
 
-func (ge TrapFood) decision(sr *SnakeRequest) int {
+func (ge TrapFood) Decision(sr *api.SnakeRequest) int {
 	orderedFood := sr.Board.OrderedClosestFood(sr.You.Head())
 
 	for _, food := range orderedFood {
@@ -29,9 +31,9 @@ func (ge TrapFood) decision(sr *SnakeRequest) int {
 			continue
 		}
 		coords := food.SurroundingCoords()
-		toFill := []Coord{}
+		toFill := []api.Coord{}
 		foundClosestToFill := false
-		closestToFill := Coord{}
+		closestToFill := api.Coord{}
 		closestDist := float64(-1)
 		for _, coord := range coords {
 			if sr.Board.IsEmpty(coord) {
@@ -51,7 +53,7 @@ func (ge TrapFood) decision(sr *SnakeRequest) int {
 			return sr.You.Head().DirectionTo(closestToFill)
 		}
 
-		validChoices := []Coord{}
+		validChoices := []api.Coord{}
 		for _, coord := range sr.You.Head().Adjacent() {
 			toAvoid := false
 			for _, tfCoord := range toFill {
@@ -70,5 +72,5 @@ func (ge TrapFood) decision(sr *SnakeRequest) int {
 			return sr.You.Head().DirectionTo(nextCoord)
 		}
 	}
-	return UNKNOWN
+	return api.UNKNOWN
 }

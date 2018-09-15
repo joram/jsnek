@@ -1,4 +1,4 @@
-package main
+package api
 
 func (sr SnakeRequest) MyEmptyAdjacents() []Coord {
 	choices := []Coord{}

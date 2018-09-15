@@ -3,83 +3,80 @@ package main
 import (
 	"log"
 	"net/http"
+	"github.com/joram/jsnek/api"
+	"github.com/joram/jsnek/logic"
+	"github.com/joram/jsnek/filters"
 )
 
-const (
-	UP = iota
-	DOWN
-	LEFT
-	RIGHT
-	UNKNOWN
-)
-
-type  Responsibility  interface  {
-	decision(*SnakeRequest) int
-	taunt() string
-}
 var (
-	responsibilities = []Responsibility{
+	responsibilities = []logic.Responsibility{
 		// NO OPTION
-		OnlyOneChoice{},
+		logic.OnlyOneChoice{},
 		// ONLY ONE NOT THREATENED CHOICE
 		// HUNGRY (health level?) GO FOR FOOD
-		GoEatOrthogonal{25},
+		logic.GoEatOrthogonal{25},
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
-		TrapFood{},
-		ValidDirection{},
+		logic.TrapFood{},
+		logic.ValidDirection{},
 	}
-	directions = []int{UP, DOWN, LEFT, RIGHT}
 	directionStrings = map[int]string{
-		UP: "up",
-		DOWN: "down",
-		LEFT: "left",
-		RIGHT: "right",
-		UNKNOWN: "WFT!",
+		api.UP: "up",
+		api.DOWN: "down",
+		api.LEFT: "left",
+		api.RIGHT: "right",
+		api.UNKNOWN: "WFT!",
 	}
+	decisionFilters = []filters.DecisionFilter{
+		filters.IsUnknownFilter{},
+		filters.IsSolidFilter{},
+	}
+
 )
 
 
 func Start(res http.ResponseWriter, req *http.Request) {
-	decoded := SnakeRequest{}
-	err := DecodeSnakeRequest(req, &decoded)
+	decoded := api.SnakeRequest{}
+	err := api.DecodeSnakeRequest(req, &decoded)
 	if err != nil {
 		log.Printf("Bad start request: %v", err)
 	}
 	dump(decoded)
 
-	respond(res, StartResponse{
+	respond(res, api.StartResponse{
 		Color: "#75CEDD",
 	})
 }
 
 func Move(res http.ResponseWriter, req *http.Request) {
-	sr := SnakeRequest{}
-	err := DecodeSnakeRequest(req, &sr)
+	sr := api.SnakeRequest{}
+	err := api.DecodeSnakeRequest(req, &sr)
 	if err != nil {
 		log.Printf("Bad move request: %v", err)
 	}
 
 	for _, r := range responsibilities {
-		choice := r.decision(&sr)
-		if choice != UNKNOWN {
-			target, err := sr.You.Head().Offset(choice)
-			if err != nil {
-				continue
+		choice := r.Decision(&sr)
+		okChoice := false
+		for _, filter := range decisionFilters {
+			ok, _ := filter.Allowed(choice, &sr)
+			if !ok {
+				okChoice = false
+				break
 			}
-			if !sr.Board.IsEmpty(*target){
-				continue
-			}
-			respond(res, MoveResponse{
-				Move: directionStrings[choice],
-				Taunt: r.taunt(),
-			})
-			return
 		}
+		if !okChoice {
+			break
+		}
+		respond(res, api.MoveResponse{
+			Move: directionStrings[choice],
+			Taunt: r.Taunt(),
+		})
+		return
 	}
 
-	respond(res, MoveResponse{Move: "down"})
+	respond(res, api.MoveResponse{Move: "down"})
 }
 
 func End(res http.ResponseWriter, req *http.Request) {

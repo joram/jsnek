@@ -1,4 +1,6 @@
-package main
+package logic
+
+import "github.com/joram/jsnek/api"
 
 import (
 	"math/rand"
@@ -8,12 +10,11 @@ type ValidDirection struct {
 
 }
 
-func (ge ValidDirection) taunt() string {
+func (ge ValidDirection) Taunt() string {
 	return "ANY VALID DIRECTION"
 }
 
-
-func (ec ValidDirection) decision(sr *SnakeRequest) int {
+func (ec ValidDirection) Decision(sr *api.SnakeRequest) int {
 	choices := sr.MyEmptyAdjacents()
 	i := rand.Intn(len(choices))
 	nextCoord := choices[i]

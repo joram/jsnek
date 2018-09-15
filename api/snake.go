@@ -1,4 +1,4 @@
-package main
+package api
 
 
 func (s *Snake) Head() Coord {

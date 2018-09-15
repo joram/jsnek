@@ -1,8 +1,17 @@
-package main
+package api
 
 import (
 	"encoding/json"
 	"net/http"
+)
+
+
+const (
+	UP = iota
+	DOWN
+	LEFT
+	RIGHT
+	UNKNOWN
 )
 
 type Coord struct {
