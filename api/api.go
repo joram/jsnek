@@ -31,6 +31,9 @@ type Board struct {
 	Width  int     `json:"width"`
 	Food   []Coord `json:"food"`
 	Snakes []Snake `json:"snakes"`
+
+	timeToBuilt bool
+	timeTo map[Coord]map[string]int
 }
 
 type Game struct {

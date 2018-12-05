@@ -1,0 +1,47 @@
+body {
+    margin: 40px;
+}
+
+#board {
+    display: inline-grid;
+    grid-gap: 5px;
+    background-color: #fff;
+    color: #444;
+}
+
+.square {
+    background-color: lightblue;
+    color: darkblue;
+    border-color: darkblue;
+    border-radius: 5px;
+    width: 30px;
+    height:30px;
+    font-size: 150%;
+}
+
+.food {
+    background-color: yellow;
+    border-radius: 15px;
+    width: 30px;
+    height:30px;
+}
+
+.snake {
+    background-color: lightcoral;
+    width: 30px;
+    height:30px;
+}
+
+.snake.head {
+    background-color: darkred;
+}
+
+.my.snake {
+    background-color: lightgreen;
+}
+
+.my.snake.head {
+    background-color: darkgreen;
+}
+
+

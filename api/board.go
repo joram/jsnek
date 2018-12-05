@@ -77,3 +77,63 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 	}
 	return sorted
 }
+
+func (b *Board) GetTimeTo(c Coord, snake_id string) (int, error) {
+	if !b.timeToBuilt {
+		type DistToCoord struct {
+			coord Coord
+			distance int
+		}
+		edge := []DistToCoord{}
+		for _, snake := range b.Snakes {
+			d := DistToCoord{snake.Head(), 0}
+			edge = append(edge, d)
+		}
+
+		for true {
+			dtc, edge := edge[0], edge[1:]
+
+			if !b.IsEmpty(dtc.coord){
+				continue
+			}
+
+			// map exists
+			_, exists := b.timeTo[dtc.coord]
+			if !exists {
+				b.timeTo[dtc.coord] = map[string]int{}
+			}
+
+			shortestDist := dtc.distance
+			oldDist, exists := b.timeTo[dtc.coord][snake_id]
+			if exists && oldDist < shortestDist {
+				shortestDist = oldDist
+				continue
+			}
+
+			if len(edge) == 0 {
+				break
+			}
+			for _, n := range dtc.coord.Adjacent() {
+				if b.IsEmpty(n) {
+					_, exists = b.timeTo[dtc.coord][snake_id]
+					if !exists {
+						next_d := DistToCoord{n, dtc.distance+1}
+						edge = append(edge, next_d)
+					}
+				}
+			}
+		}
+
+		b.timeToBuilt = true
+	}
+
+	times, exists := b.timeTo[c]
+	if !exists {
+		return -1, errors.New("no data at coord")
+	}
+	t, exists := times[snake_id]
+	if !exists {
+		return -1, errors.New("no data at snake at coord")
+	}
+	return t, nil
+}

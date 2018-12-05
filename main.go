@@ -3,15 +3,24 @@ package main
 import (
 	"log"
 	"net/http"
+	"github.com/julienschmidt/httprouter"
 	"os"
 )
 
+func Static(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	http.ServeFile(w, r, r.URL.Path[1:])
+}
+
 func main() {
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/", fs)
-	http.HandleFunc("/start", Start)
-	http.HandleFunc("/move", Move)
-	http.HandleFunc("/end", End)
+	router := httprouter.New()
+	router.POST("/start", Start)
+	router.POST("/move", Move)
+	router.POST("/end", End)
+	router.POST("/ping", Ping)
+	router.GET("/debug", Debug)
+	router.GET("/debug/:gameID", Debug)
+	router.GET("/static/*filepath", Static)
+
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -22,5 +31,5 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	log.Printf("Running server on port %s...\n", port)
-	http.ListenAndServe(":"+port, LoggingHandler(http.DefaultServeMux))
+	http.ListenAndServe(":"+port, LoggingHandler(router))
 }
