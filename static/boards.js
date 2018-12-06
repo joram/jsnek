@@ -4,8 +4,7 @@ function get_square(x, y) {
     return square;
 }
 
-function render_board(req){
-    console.log(r);
+function render_board(req) {
     b = req.board;
     board = $("#board");
     board.empty();
@@ -22,30 +21,38 @@ function render_board(req){
     }
 
     // draw food
-    for (i = 0; i < b.food.length; i++){
+    for (i = 0; i < b.food.length; i++) {
         food = b.food[i];
         square = get_square(food.x, food.y);
         square.append($(`<div class='food'/>`));
     }
 
     // draw snakes
-    for(i = 0; i < b.snakes.length; i++) {
+    for (i = 0; i < b.snakes.length; i++) {
         snake = b.snakes[i];
-        console.log(snake);
         for (j = 0; j < snake.body.length; j++) {
             coord = snake.body[j];
             square = get_square(coord.x, coord.y);
-            console.log(coord);
-            console.log(square);
             cls = "snake ";
             if (j === 0) {
                 cls += "head "
             }
-            if(snake.id ===
-                req.you.id){
+            if (snake.id ===
+                req.you.id) {
                 cls += " my"
             }
             square.append($(`<div class='${cls}'/>`));
+        }
+    }
+
+    // draw snake distances
+    for (key in b.data) {
+        for (x in b.data[key]) {
+            for (y in b.data[key][x]) {
+                val = b.data[key][x][y];
+                square = get_square(x, y);
+                square.attr("data-dist", "d"+val);
+            }
         }
     }
 }

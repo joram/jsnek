@@ -1,6 +1,9 @@
 package api
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 func (b *Board) IsEmpty(c Coord) bool {
 	if c.X >= b.Width {
@@ -24,6 +27,43 @@ func (b *Board) IsEmpty(c Coord) bool {
 		}
 	}
 	return true
+}
+
+func (b *Board) AddData(c Coord, key string, val int){
+	if b.Data == nil {
+		b.Data = map[string]map[int]map[int]int{}
+	}
+	_, exists := b.Data[key]
+	if !exists {
+		b.Data[key] = map[int]map[int]int{}
+	}
+	_, exists = b.Data[key][c.X]
+	if !exists {
+		b.Data[key][c.X] = map[int]int{}
+	}
+
+	b.Data[key][c.X][c.Y] = val
+}
+
+func (b *Board) GetData(c Coord, key string) (int, error){
+	err := errors.New("nothing at coord")
+	if b.Data == nil {
+		return 0, err
+	}
+	_, exists := b.Data[key]
+	if !exists {
+		return 0, err
+	}
+	_, exists = b.Data[key][c.X]
+	if !exists {
+		return 0, err
+	}
+
+	val, exists := b.Data[key][c.X][c.Y]
+	if !exists {
+		return 0, err
+	}
+	return val, nil
 }
 
 func (b *Board) ClosestFood(c Coord) (*Coord, error) {
@@ -79,61 +119,59 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 }
 
 func (b *Board) GetTimeTo(c Coord, snake_id string) (int, error) {
-	if !b.timeToBuilt {
-		type DistToCoord struct {
-			coord Coord
-			distance int
-		}
-		edge := []DistToCoord{}
-		for _, snake := range b.Snakes {
-			d := DistToCoord{snake.Head(), 0}
-			edge = append(edge, d)
-		}
+	key := fmt.Sprintf("time_to_%s", snake_id)
+	_, err := b.GetData(c, key)
+	if err != nil {
+		b.PopulateDistances()
+	}
+	return b.GetData(c, key)
+}
 
-		for true {
-			dtc, edge := edge[0], edge[1:]
 
-			if !b.IsEmpty(dtc.coord){
+func (b* Board) PopulateDistances(){
+	type DistToCoord struct {
+		coord Coord
+		distance int
+		snake_id string
+	}
+	edge := []DistToCoord{}
+	for _, snake := range b.Snakes {
+		for _, coord := range snake.Head().Adjacent() {
+			if b.IsEmpty(coord){
+				edge = append(edge, DistToCoord{coord, 1, snake.ID,})
+			}
+		}
+	}
+
+	for true {
+		if len(edge) == 0 {
+			break
+		}
+		dtc := edge[0]
+		edge = edge[1:]
+		key := fmt.Sprintf("time_to_%s", dtc.snake_id)
+		b.AddData(dtc.coord, key, dtc.distance)
+
+
+		//// get closest dist
+		//minDist := dtc.distance
+		//val, err := b.GetData(dtc.coord, key)
+		//if err == nil && val < minDist {
+		//	continue
+		//}
+
+		// delve further
+		for _, adjCoord := range dtc.coord.Adjacent() {
+			if !b.IsEmpty(adjCoord) {
+				continue
+			}
+			_, err := b.GetData(adjCoord, key)
+			if err == nil {
 				continue
 			}
 
-			// map exists
-			_, exists := b.timeTo[dtc.coord]
-			if !exists {
-				b.timeTo[dtc.coord] = map[string]int{}
-			}
+			edge = append(edge, DistToCoord{adjCoord, dtc.distance+1, dtc.snake_id,})
 
-			shortestDist := dtc.distance
-			oldDist, exists := b.timeTo[dtc.coord][snake_id]
-			if exists && oldDist < shortestDist {
-				shortestDist = oldDist
-				continue
-			}
-
-			if len(edge) == 0 {
-				break
-			}
-			for _, n := range dtc.coord.Adjacent() {
-				if b.IsEmpty(n) {
-					_, exists = b.timeTo[dtc.coord][snake_id]
-					if !exists {
-						next_d := DistToCoord{n, dtc.distance+1}
-						edge = append(edge, next_d)
-					}
-				}
-			}
 		}
-
-		b.timeToBuilt = true
 	}
-
-	times, exists := b.timeTo[c]
-	if !exists {
-		return -1, errors.New("no data at coord")
-	}
-	t, exists := times[snake_id]
-	if !exists {
-		return -1, errors.New("no data at snake at coord")
-	}
-	return t, nil
 }

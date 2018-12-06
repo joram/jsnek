@@ -3,7 +3,7 @@ package main
 import "github.com/joram/jsnek/api"
 
 var (
-	exampleBoard = api.Board{
+	exampleBoard = &api.Board{
 		Width:20,
 		Height:20,
 		Food: []api.Coord{{0,0},{19,19},},

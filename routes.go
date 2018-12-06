@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
 	"github.com/julienschmidt/httprouter"
+	"html/template"
 	"log"
 	"net/http"
-	"html/template"
 )
 
 var (
@@ -39,7 +38,6 @@ var (
 			"example": []api.SnakeRequest{{
 				Game:api.Game{ID:"123"},
 				Turn:1,
-				Board:exampleBoard,
 				You: exampleBoard.Snakes[0],
 			}},
 	}
@@ -51,7 +49,6 @@ func Start(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Printf("Bad start request: %v", err)
 	}
-	dump(decoded)
 
 	respond(res, api.StartResponse{
 		Color: "#75CEDD",
@@ -69,6 +66,7 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	if !exists {
 		games[sr.Game.ID] = []api.SnakeRequest{}
 	}
+	sr.Board.PopulateDistances()
 	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
 	for _, l := range logics {
@@ -77,7 +75,6 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		for _, filter := range decisionFilters {
 			ok, _ := filter.Allowed(choice, &sr)
 			if !ok {
-				fmt.Printf("%s %s\n", directionStrings[choice], filter.Description())
 				okChoice = false
 				break
 			}

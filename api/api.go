@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -19,6 +20,10 @@ type Coord struct {
 	Y int `json:"y"`
 }
 
+func (c *Coord) String() string {
+	return fmt.Sprintf("%d_%d", c.X, c.Y)
+}
+
 type Snake struct {
 	ID     string  `json:"id"`
 	Name   string  `json:"name"`
@@ -27,13 +32,11 @@ type Snake struct {
 }
 
 type Board struct {
-	Height int     `json:"height"`
-	Width  int     `json:"width"`
-	Food   []Coord `json:"food"`
-	Snakes []Snake `json:"snakes"`
-
-	timeToBuilt bool
-	timeTo map[Coord]map[string]int
+	Height int                      `json:"height"`
+	Width  int                      `json:"width"`
+	Food   []Coord                  `json:"food"`
+	Snakes []Snake                  `json:"snakes"`
+	Data   map[string]map[int]map[int]int `json:"data"`
 }
 
 type Game struct {
