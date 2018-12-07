@@ -24,6 +24,11 @@
 #   go-tests = true
 #   unused-packages = true
 
+[metadata.heroku]
+  root-package = "github.com/joram/jsnek"
+  go-version = "go1.8.3"
+  install = []
+  ensure = "false"
 
 [[constraint]]
   name = "github.com/davecgh/go-spew"
