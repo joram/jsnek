@@ -15,7 +15,7 @@ func (ge GoMoreRoom) Taunt() string {
 }
 
 func (ge GoMoreRoom) Decision(sr *api.SnakeRequest) int {
-	sr.Board.PopulateDistances()
+	//sr.Board.PopulateDistances(sr.You)
 
 	biggest := -1
 	biggestDir := ""

@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 )
 
 func (b *Board) IsEmpty(c Coord) bool {
@@ -138,14 +137,18 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 func (b *Board) GetTimeTo(c Coord, snake_id string) (int, error) {
 	key := fmt.Sprintf("time_to_%s", snake_id)
 	_, err := b.GetData(c, key)
+	var snake Snake
+	for _, s := range b.Snakes {
+		snake = s
+	}
 	if err != nil {
-		b.PopulateDistances()
+		b.PopulateDistances(snake)
 	}
 	return b.GetData(c, key)
 }
 
 
-func (b* Board) PopulateDistances(){
+func (b* Board) PopulateDistances(you Snake){
 	b.AbleToVisitCount = map[string]int{
 		"up": 0,
 		"down": 0,
@@ -158,11 +161,9 @@ func (b* Board) PopulateDistances(){
 		snake_id string
 	}
 	edge := []DistToCoord{}
-	for _, snake := range b.Snakes {
-		for d, coord := range snake.Head().AdjacentMap() {
-			if b.IsEmpty(coord){
-				edge = append(edge, DistToCoord{coord, 1, d})
-			}
+	for d, coord := range you.Head().AdjacentMap() {
+		if b.IsEmpty(coord){
+			edge = append(edge, DistToCoord{coord, 1, d})
 		}
 	}
 

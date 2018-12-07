@@ -84,13 +84,12 @@ function render_board(board_i, requests) {
     }
 
     // draw snake distances
-    for (key in b.data) {
-        for (x in b.data[key]) {
-            for (y in b.data[key][x]) {
-                val = b.data[key][x][y];
-                square = get_square(x, y);
-                square.attr("data-dist", "d"+val);
-            }
+    key = "time_to_"+;
+    for (x in b.data[key]) {
+        for (y in b.data[key][x]) {
+            val = b.data[key][x][y];
+            square = get_square(x, y);
+            square.attr("data-dist", "d"+val);
         }
     }
 
