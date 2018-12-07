@@ -21,7 +21,7 @@ var (
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
-		logic.GoMoreRoom{0.5},
+		logic.GoMoreRoom{3},
 		logic.TrapFood{},
 		logic.ValidDirection{},
 	}
