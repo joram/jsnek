@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (b *Board) IsEmpty(c Coord) bool {
@@ -28,14 +29,57 @@ func (b *Board) IsEmpty(c Coord) bool {
 	return true
 }
 
-func (b *Board) IsATrap(c Coord) bool {
-	solidAdjacentSquares := 0
-	for _, cc := range c.Adjacent(){
-		if !b.IsEmpty(cc){
-			solidAdjacentSquares += 1
-		}
+func (b *Board) AddData(c Coord, key string, val int) {
+	if b.Data == nil {
+		b.Data = map[string]map[int]map[int]int{}
 	}
-	return solidAdjacentSquares >= 3
+	_, exists := b.Data[key]
+	if !exists {
+		b.Data[key] = map[int]map[int]int{}
+	}
+	_, exists = b.Data[key][c.X]
+	if !exists {
+		b.Data[key][c.X] = map[int]int{}
+	}
+
+	b.Data[key][c.X][c.Y] = val
+}
+
+func (b *Board) HasData(c Coord, key string) bool {
+	if b.Data == nil {
+		return false
+	}
+	_, exists := b.Data[key]
+	if !exists {
+		return false
+	}
+	_, exists = b.Data[key][c.X]
+	if !exists {
+		return false
+	}
+
+	_, exists = b.Data[key][c.X][c.Y]
+	return exists
+}
+func (b *Board) GetData(c Coord, key string) (int, error) {
+	err := errors.New("nothing at coord")
+	if b.Data == nil {
+		return 0, err
+	}
+	_, exists := b.Data[key]
+	if !exists {
+		return 0, err
+	}
+	_, exists = b.Data[key][c.X]
+	if !exists {
+		return 0, err
+	}
+
+	val, exists := b.Data[key][c.X][c.Y]
+	if !exists {
+		return 0, err
+	}
+	return val, nil
 }
 
 func (b *Board) ClosestFood(c Coord) (*Coord, error) {
@@ -44,9 +88,6 @@ func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	closestDist := float64(-1)
 
 	for _, food := range b.Food {
-		if b.IsATrap(food) {
-			continue
-		}
 		dist := c.OrthogonalDistance(food)
 		if !foundFood || dist < closestDist {
 			closestFood = food
@@ -93,33 +134,63 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 	return sorted
 }
 
-
-func (b* Board) PopulateDistances(you Snake){
-
-	meLeft := &DistanceData{}
-	meLeft.Calculate([]Coord{you.Head().Left()}, b)
-	meRight := &DistanceData{}
-	meRight.Calculate([]Coord{you.Head().Right()}, b)
-	meUp := &DistanceData{}
-	meUp.Calculate([]Coord{you.Head().Up()}, b)
-	meDown := &DistanceData{}
-	meDown.Calculate([]Coord{you.Head().Down()}, b)
-
-	b.Data = map[string]*DistanceData{
-		"me_left": meLeft,
-		"me_right": meRight,
-		"me_up": meUp,
-		"me_down": meDown,
+func (b *Board) GetTimeTo(c Coord, snake_id string) (int, error) {
+	key := fmt.Sprintf("time_to_%s", snake_id)
+	_, err := b.GetData(c, key)
+	var snake Snake
+	for _, s := range b.Snakes {
+		snake = s
 	}
-	for _, snake := range b.Snakes {
-		b.Data[snake.ID] = &DistanceData{}
-		b.Data[snake.ID].Calculate(snake.Head().Adjacent(), b)
+	if err != nil {
+		b.PopulateDistances(snake)
 	}
+	return b.GetData(c, key)
+}
 
+func (b *Board) PopulateDistances(you Snake) {
 	b.AbleToVisitCount = map[string]int{
-		"left": meLeft.Count,
-		"right": meRight.Count,
-		"up": meUp.Count,
-		"down": meDown.Count,
+		"up":    0,
+		"down":  0,
+		"left":  0,
+		"right": 0,
+	}
+	type DistToCoord struct {
+		coord    Coord
+		distance int
+		snake_id string
+	}
+	edge := []DistToCoord{}
+	for d, coord := range you.Head().AdjacentMap() {
+		if b.IsEmpty(coord) {
+			edge = append(edge, DistToCoord{coord, 1, d})
+		}
+	}
+
+	for true {
+		if len(edge) == 0 {
+			break
+		}
+		dtc := edge[0]
+		edge = edge[1:]
+
+		if b.HasData(dtc.coord, dtc.snake_id) {
+			continue
+		}
+
+		// visit this
+		key := dtc.snake_id
+		b.AddData(dtc.coord, key, dtc.distance)
+		b.AbleToVisitCount[dtc.snake_id] += 1
+
+		// delve further
+		for _, adjCoord := range dtc.coord.Adjacent() {
+			_, err := b.GetData(adjCoord, key)
+			if !b.IsEmpty(adjCoord) || err == nil {
+				continue
+			}
+
+			edge = append(edge, DistToCoord{adjCoord, dtc.distance + 1, dtc.snake_id})
+
+		}
 	}
 }
