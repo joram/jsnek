@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 )
 
 func (b *Board) IsEmpty(c Coord) bool {
@@ -45,6 +46,22 @@ func (b *Board) AddData(c Coord, key string, val int){
 	b.Data[key][c.X][c.Y] = val
 }
 
+func (b *Board) HasData(c Coord, key string) bool {
+	if b.Data == nil {
+		return false
+	}
+	_, exists := b.Data[key]
+	if !exists {
+		return false
+	}
+	_, exists = b.Data[key][c.X]
+	if !exists {
+		return false
+	}
+
+	_, exists = b.Data[key][c.X][c.Y]
+	return exists
+}
 func (b *Board) GetData(c Coord, key string) (int, error){
 	err := errors.New("nothing at coord")
 	if b.Data == nil {
@@ -129,6 +146,12 @@ func (b *Board) GetTimeTo(c Coord, snake_id string) (int, error) {
 
 
 func (b* Board) PopulateDistances(){
+	b.AbleToVisitCount = map[string]int{
+		"up": 0,
+		"down": 0,
+		"left": 0,
+		"right": 0,
+	}
 	type DistToCoord struct {
 		coord Coord
 		distance int
@@ -136,9 +159,9 @@ func (b* Board) PopulateDistances(){
 	}
 	edge := []DistToCoord{}
 	for _, snake := range b.Snakes {
-		for _, coord := range snake.Head().Adjacent() {
+		for d, coord := range snake.Head().AdjacentMap() {
 			if b.IsEmpty(coord){
-				edge = append(edge, DistToCoord{coord, 1, snake.ID,})
+				edge = append(edge, DistToCoord{coord, 1, d})
 			}
 		}
 	}
@@ -149,24 +172,20 @@ func (b* Board) PopulateDistances(){
 		}
 		dtc := edge[0]
 		edge = edge[1:]
-		key := fmt.Sprintf("time_to_%s", dtc.snake_id)
+
+		if b.HasData(dtc.coord, dtc.snake_id) {
+			continue
+		}
+
+		// visit this
+		key := dtc.snake_id
 		b.AddData(dtc.coord, key, dtc.distance)
-
-
-		//// get closest dist
-		//minDist := dtc.distance
-		//val, err := b.GetData(dtc.coord, key)
-		//if err == nil && val < minDist {
-		//	continue
-		//}
+		b.AbleToVisitCount[dtc.snake_id] += 1
 
 		// delve further
 		for _, adjCoord := range dtc.coord.Adjacent() {
-			if !b.IsEmpty(adjCoord) {
-				continue
-			}
 			_, err := b.GetData(adjCoord, key)
-			if err == nil {
+			if !b.IsEmpty(adjCoord) || err == nil {
 				continue
 			}
 
@@ -174,4 +193,5 @@ func (b* Board) PopulateDistances(){
 
 		}
 	}
+	spew.Dump(b.AbleToVisitCount)
 }

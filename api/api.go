@@ -32,11 +32,12 @@ type Snake struct {
 }
 
 type Board struct {
-	Height int                      `json:"height"`
-	Width  int                      `json:"width"`
-	Food   []Coord                  `json:"food"`
-	Snakes []Snake                  `json:"snakes"`
-	Data   map[string]map[int]map[int]int `json:"data"`
+	Height           int                      `json:"height"`
+	Width            int                      `json:"width"`
+	Food             []Coord                  `json:"food"`
+	Snakes           []Snake                  `json:"snakes"`
+	Data             map[string]map[int]map[int]int `json:"data"`
+	AbleToVisitCount map[string]int
 }
 
 type Game struct {

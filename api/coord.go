@@ -5,6 +5,14 @@ import (
 	"math"
 )
 
+func (c Coord) AdjacentMap() map[string]Coord {
+	return map[string]Coord{
+		"down":{c.X + 0, c.Y + 1},
+		"up":{c.X + 0, c.Y - 1},
+		"right":{c.X + 1, c.Y + 0},
+		"left":{c.X - 1, c.Y + 0},
+	}
+}
 func (c Coord) Adjacent() []Coord {
 	return []Coord{
 		{c.X + 0, c.Y + 1},

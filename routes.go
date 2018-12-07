@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
@@ -20,6 +21,7 @@ var (
 		// SHORTEST SNAKE GO FOR FOOD
 		// POTENTIAL KILL
 		// EAT THEIR LUNCH (force them to starve)
+		logic.GoMoreRoom{0.5},
 		logic.TrapFood{},
 		logic.ValidDirection{},
 	}
@@ -82,6 +84,7 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		if !okChoice {
 			continue
 		}
+		fmt.Println(l.Taunt())
 		respond(res, api.MoveResponse{
 			Move:  directionStrings[choice],
 			Taunt: l.Taunt(),
@@ -136,7 +139,7 @@ func Debug(res http.ResponseWriter, req *http.Request, params httprouter.Params)
 		<script>
             requests = {{ .SnakeRequests }};	
 			$( document ).ready(function() {
-	    		r = requests[0];
+	    		r = requests[requests.length-10];
     			render_board(r);
 			});
 		</script>

@@ -4,7 +4,7 @@ body {
 
 #board {
     display: inline-grid;
-    grid-gap: 5px;
+    grid-gap: 1px;
     background-color: #fff;
     color: #444;
 }
@@ -42,9 +42,14 @@ body {
 [data-dist=d14] {background-color: #220000;}
 [data-dist=d15] {background-color: #110000;}
 [data-dist=d16] {background-color: #000000;}
-[data-dist=d17] {background-color: #000000;}
-[data-dist=d18] {background-color: #000000;}
-[data-dist=d19] {background-color: #000000;}
+[data-dist=d17] {background-color: #001100;}
+[data-dist=d18] {background-color: #002200;}
+[data-dist=d19] {background-color: #003300;}
+[data-dist=d20] {background-color: #004400;}
+[data-dist=d21] {background-color: #005500;}
+[data-dist=d22] {background-color: #006600;}
+[data-dist=d23] {background-color: #007700;}
+[data-dist=d24] {background-color: #008800;}
 
 .snake {
     background-color: lightcoral;

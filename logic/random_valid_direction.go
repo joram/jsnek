@@ -15,6 +15,9 @@ func (ge ValidDirection) Taunt() string {
 
 func (ec ValidDirection) Decision(sr *api.SnakeRequest) int {
 	choices := sr.MyEmptyAdjacents()
+	if len(choices) == 0 {
+		return api.UNKNOWN
+	}
 	i := rand.Intn(len(choices))
 	nextCoord := choices[i]
 	return sr.You.Head().DirectionTo(nextCoord)
