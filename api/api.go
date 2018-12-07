@@ -15,6 +15,26 @@ const (
 	UNKNOWN
 )
 
+func DirToString(d int) string {
+	return map[int]string{
+		UP:      "up",
+		DOWN:    "down",
+		LEFT:    "left",
+		RIGHT:   "right",
+		UNKNOWN: "WFT!",
+	}[d]
+}
+
+func StringToDir(s string) int {
+	return map[string]int{
+		"up": UP,
+		"down": DOWN,
+		"left": LEFT,
+		"right":RIGHT,
+		"WFT!": UNKNOWN,
+	}[s]
+}
+
 type Coord struct {
 	X int `json:"x"`
 	Y int `json:"y"`

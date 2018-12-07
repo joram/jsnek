@@ -35,7 +35,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 	if couldBeEaten {
 		i := rand.Intn(len(safeDirections))
 		safeDir := safeDirections[i]
-		return safeDir
+		return api.StringToDir(safeDir)
 	}
 
 	return api.UNKNOWN
