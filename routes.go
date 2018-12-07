@@ -127,23 +127,23 @@ func Debug(res http.ResponseWriter, req *http.Request, params httprouter.Params)
 
 	const tpl2 = `<!DOCTYPE html><html>
 	<head>
-<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
-		<script src="/static/boards.js"></script>
-		<link href="/static/boards.css" rel="stylesheet" type="text/css" media="all">
+      <script
+  		src="https://code.jquery.com/jquery-3.3.1.min.js"
+  		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  		crossorigin="anonymous"></script>
+	  <script src="/static/boards.js"></script>
+	  <link href="/static/boards.css" rel="stylesheet" type="text/css" media="all">
 	</head>
 	<body>
-    	<div id="board"></div>
-		<script>
-            requests = {{ .SnakeRequests }};	
-			$( document ).ready(function() {
-	    		r = requests[requests.length-10];
-    			render_board(r);
-			});
-		</script>
-	</body></html>`
+      <div id="board"></div>
+	  <script>
+        requests = {{ .SnakeRequests }};	
+		$( document ).ready(function() {
+    	  render_board(0, requests);
+		});
+	  </script>
+	</body>
+  </html>`
 	t, err := template.New("webpage").Parse(tpl2)
 	if err != nil {
 		log.Fatal(err)

@@ -4,7 +4,45 @@ function get_square(x, y) {
     return square;
 }
 
-function render_board(req) {
+function render_slider(board_i, requests){
+    if(board_i<0){
+        board_i = 0;
+    }
+    if(board_i >= requests.length){
+        board_i = requests.length-1
+    }
+
+    req = requests[board_i];
+    b = req.board;
+    board = $("#board");
+
+    // frame slider
+    s = $(`<div class="slider" style="grid-column-start:1; grid-column-end:${b.width};"><input type="range" min="1" max="${req.length}" value="${board_i}" class="slider" id="frame_picker"></div>`);
+    board.append(s);
+    picker = $("#frame_picker");
+    picker.on("change", function(){
+        i = parseInt(picker.val());
+        console.log("changing to frame "+i);
+        render_board(requests[i]);
+    });
+
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: // left
+                render_board(board_i-1, requests);
+                break;
+
+            case 39: // right
+                render_board(board_i+1, requests);
+                break;
+            default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+}
+
+function render_board(board_i, requests) {
+    req = requests[board_i];
     b = req.board;
     board = $("#board");
     board.empty();
@@ -55,4 +93,7 @@ function render_board(req) {
             }
         }
     }
+
+
+    render_slider(board_i, requests);
 }
