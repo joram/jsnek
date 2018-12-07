@@ -15,6 +15,7 @@ var (
 	logics = []logic.Responsibility{
 		// NO OPTION
 		logic.OnlyOneChoice{},
+		logic.AvoidHeadOnHead{},
 		// ONLY ONE NOT THREATENED CHOICE
 		// HUNGRY (health level?) GO FOR FOOD
 		logic.GoEatOrthogonal{25},
