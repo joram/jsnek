@@ -193,5 +193,4 @@ func (b* Board) PopulateDistances(){
 
 		}
 	}
-	spew.Dump(b.AbleToVisitCount)
 }

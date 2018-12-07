@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/joram/jsnek/api"
 )
 
@@ -30,13 +32,17 @@ func (ge GoMoreRoom) Decision(sr *api.SnakeRequest) int {
 	avgRoomAvail := sumRoomAvail/dirCounts
 
 	if float32(biggest)/float32(avgRoomAvail) > ge.Ratio {
-		return map[string]int{
+		d := map[string]int{
 			"up": api.UP,
 			"down": api.DOWN,
 			"left": api.LEFT,
 			"right":api.RIGHT,
 			"WFT!": api.UNKNOWN,
 		}[biggestDir]
+
+		spew.Dump(sr.Board.AbleToVisitCount)
+		fmt.Printf("going %s to avoid small space", biggestDir)
+		return d
 	}
 
 	return api.UNKNOWN
