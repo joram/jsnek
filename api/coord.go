@@ -15,19 +15,19 @@ func (c Coord) AdjacentMap() map[string]Coord {
 }
 func (c Coord) Adjacent() []Coord {
 	return []Coord{
-		{c.X + 0, c.Y + 1},
-		{c.X + 0, c.Y - 1},
-		{c.X + 1, c.Y + 0},
-		{c.X - 1, c.Y + 0},
+		c.Up(),
+		c.Down(),
+		c.Left(),
+		c.Right(),
 	}
 }
 
 func (c Coord) SurroundingCoords() []Coord {
 	return []Coord{
-		{c.X + 0, c.Y + 1},
-		{c.X + 0, c.Y - 1},
-		{c.X + 1, c.Y + 0},
-		{c.X - 1, c.Y + 0},
+		c.Up(),
+		c.Down(),
+		c.Left(),
+		c.Right(),
 
 		{c.X + 1, c.Y + 1},
 		{c.X - 1, c.Y - 1},
@@ -40,6 +40,12 @@ func (c Coord) SurroundingCoords() []Coord {
 func (c Coord) Equal(other Coord) bool {
 	return c.X == other.X && c.Y == other.Y
 }
+
+func (c Coord) Left() Coord { return Coord{X:c.X-1, Y:c.Y}}
+func (c Coord) Right() Coord { return Coord{X:c.X+1, Y:c.Y}}
+func (c Coord) Up() Coord { return Coord{X:c.X, Y:c.Y-1}}
+func (c Coord) Down() Coord { return Coord{X:c.X, Y:c.Y+1}}
+
 
 func (c Coord) DirectionTo(other Coord) int {
 	xd := other.X - c.X
