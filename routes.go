@@ -81,6 +81,9 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 				break
 			}
 		}
+		if choice == api.UNKNOWN {
+			continue
+		}
 		if !okChoice {
 			println("skipping choice "+directionStrings[choice]+" by "+l.Taunt())
 			continue
