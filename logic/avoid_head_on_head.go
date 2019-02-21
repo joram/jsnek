@@ -3,6 +3,7 @@ package logic
 import (
 	"github.com/joram/jsnek/api"
 	"math/rand"
+	"spew"
 )
 
 type AvoidHeadOnHead struct {}
@@ -39,7 +40,8 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 		}
 	}
 
-	println(couldBeEaten, safeDirections)
+	println(couldBeEaten)
+	spew.dump(safeDirections)
 
 	// Could Head on Head
 	if couldBeEaten {
