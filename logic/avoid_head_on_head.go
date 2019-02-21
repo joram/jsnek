@@ -36,7 +36,9 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 		if badCoord {
 			couldBeEaten = true
 		} else {
-			safeDirections = append(safeDirections, dir)
+			if sr.Board.IsEmpty(coord){
+				safeDirections = append(safeDirections, dir)
+			}
 		}
 	}
 
