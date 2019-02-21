@@ -1,9 +1,9 @@
 package logic
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	"github.com/joram/jsnek/api"
 	"math/rand"
-	"spew"
 )
 
 type AvoidHeadOnHead struct {}
@@ -41,7 +41,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 	}
 
 	println(couldBeEaten)
-	spew.dump(safeDirections)
+	spew.Dump(safeDirections)
 
 	// Could Head on Head
 	if couldBeEaten {
