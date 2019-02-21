@@ -85,7 +85,7 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		if !okChoice {
 			continue
 		}
-		fmt.Println(l.Taunt())
+		fmt.Println(sr.Game.ID, l.Taunt())
 		respond(res, api.MoveResponse{
 			Move:  directionStrings[choice],
 			Taunt: l.Taunt(),
