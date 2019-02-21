@@ -28,15 +28,18 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 		badCoord := false
 		for _, dangerCoord := range dangerCoords {
 			if coord.Equal(dangerCoord) {
-				couldBeEaten = true
 				badCoord = true
 				break
 			}
 		}
-		if !badCoord {
+		if badCoord {
+			couldBeEaten = true
+		} else {
 			safeDirections = append(safeDirections, dir)
 		}
 	}
+
+	println(couldBeEaten, safeDirections)
 
 	// Could Head on Head
 	if couldBeEaten {
