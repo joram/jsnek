@@ -74,17 +74,18 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 
 	for _, l := range logics {
 		choice := l.Decision(&sr)
-		//okChoice := true
-		//for _, filter := range decisionFilters {
-		//	ok, _ := filter.Allowed(choice, &sr)
-		//	if !ok {
-		//		okChoice = false
-		//		break
-		//	}
-		//}
-		//if !okChoice {
-		//	continue
-		//}
+		okChoice := true
+		for _, filter := range decisionFilters {
+			ok, _ := filter.Allowed(choice, &sr)
+			if !ok {
+				okChoice = false
+				break
+			}
+		}
+		if !okChoice {
+			println("skipping choice "+directionStrings[choice]+" by "+l.Taunt())
+			continue
+		}
 		fmt.Println(sr.Game.ID, l.Taunt())
 		respond(res, api.MoveResponse{
 			Move:  directionStrings[choice],
