@@ -28,12 +28,25 @@ func (b *Board) IsEmpty(c Coord) bool {
 	return true
 }
 
+func (b *Board) IsATrap(c Coord) bool {
+	solidAdjacentSquares := 0
+	for _, cc := range c.Adjacent(){
+		if !b.IsEmpty(cc){
+			solidAdjacentSquares += 1
+		}
+	}
+	return solidAdjacentSquares >= 3
+}
+
 func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	foundFood := false
 	closestFood := Coord{}
 	closestDist := float64(-1)
 
 	for _, food := range b.Food {
+		if b.IsATrap(food) {
+			continue
+		}
 		dist := c.OrthogonalDistance(food)
 		if !foundFood || dist < closestDist {
 			closestFood = food

@@ -3,7 +3,7 @@ package api
 import "errors"
 
 type DistanceData struct {
-	InitialCoords []Coord
+	InitialCoords []Coord `json:"initial_coords"`
 	Data map[int]map[int]int `json:"data"`
 	Count int `json:"count"`
 	board *Board

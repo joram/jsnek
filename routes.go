@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
@@ -154,5 +155,6 @@ func Debug(res http.ResponseWriter, req *http.Request, params httprouter.Params)
 		SnakeRequests: games[gameID],
 	}
 	t.Execute(res, renderContext)
+	spew.Dump(games[gameID][len(games[gameID])-1])
 }
 
