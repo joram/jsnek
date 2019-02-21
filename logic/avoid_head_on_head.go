@@ -42,9 +42,6 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 		}
 	}
 
-	println(couldBeEaten)
-	spew.Dump(safeDirections)
-
 	// Could Head on Head
 	if couldBeEaten {
 		i := rand.Intn(len(safeDirections))

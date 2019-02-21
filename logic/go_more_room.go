@@ -1,8 +1,6 @@
 package logic
 
 import (
-	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/joram/jsnek/api"
 )
 
@@ -40,8 +38,6 @@ func (ge GoMoreRoom) Decision(sr *api.SnakeRequest) int {
 			"WFT!": api.UNKNOWN,
 		}[biggestDir]
 
-		spew.Dump(sr.Board.AbleToVisitCount)
-		fmt.Printf("going %s to avoid small space", biggestDir)
 		return d
 	}
 

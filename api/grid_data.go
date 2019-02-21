@@ -11,7 +11,6 @@ type DistanceData struct {
 }
 
 func (dd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
-	println(initalCoords)
 	if dd.calculated {
 		return
 	}

@@ -14,13 +14,6 @@ func respond(res http.ResponseWriter, obj interface{}) {
 	res.Write([]byte("\n"))
 }
 
-func dump(obj interface{}) {
-	data, err := json.MarshalIndent(obj, "", "  ")
-	if err == nil {
-		log.Printf(string(data))
-	}
-}
-
 const LogFormat = `"%s %s %s %d %d" %f`
 
 func LoggingHandler(next http.Handler) http.Handler {
