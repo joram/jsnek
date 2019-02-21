@@ -1,7 +1,6 @@
 package logic
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/joram/jsnek/api"
 	"math/rand"
 )
