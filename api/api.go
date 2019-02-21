@@ -56,8 +56,8 @@ type Board struct {
 	Width            int                     `json:"width"`
 	Food             []Coord                 `json:"food"`
 	Snakes           []Snake                 `json:"snakes"`
-	Data             map[string]*DistanceData
-	AbleToVisitCount map[string]int
+	Data             map[string]*DistanceData `json:"data"`
+	AbleToVisitCount map[string]int `json:"able_to_visit"`
 }
 
 type Game struct {
