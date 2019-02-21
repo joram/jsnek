@@ -95,31 +95,48 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 
 
 func (b* Board) PopulateDistances(you Snake){
-
-	meLeft := &DistanceData{}
-	meLeft.Calculate([]Coord{you.Head().Left()}, b)
-	meRight := &DistanceData{}
-	meRight.Calculate([]Coord{you.Head().Right()}, b)
-	meUp := &DistanceData{}
-	meUp.Calculate([]Coord{you.Head().Up()}, b)
-	meDown := &DistanceData{}
-	meDown.Calculate([]Coord{you.Head().Down()}, b)
-
-	b.Data = map[string]*DistanceData{
-		"me_left": meLeft,
-		"me_right": meRight,
-		"me_up": meUp,
-		"me_down": meDown,
+	b.Data = map[string]*DistanceData{}
+	b.AbleToVisitCount = map[string]int{
+		"left": 0,
+		"right": 0,
+		"up": 0,
+		"down": 0,
 	}
+
+	left := you.Head().Left()
+	if(b.IsEmpty(left)){
+		meLeft := &DistanceData{}
+		meLeft.Calculate([]Coord{left}, b)
+		b.Data["me_left"] = meLeft
+		b.AbleToVisitCount["left"] = meLeft.Count
+	}
+
+	right := you.Head().Right()
+	if(b.IsEmpty(right)) {
+		meRight := &DistanceData{}
+		meRight.Calculate([]Coord{right}, b)
+		b.Data["me_right"] = meRight
+		b.AbleToVisitCount["right"] = meRight.Count
+	}
+
+	up := you.Head().Up()
+	if(b.IsEmpty(up)) {
+		meUp := &DistanceData{}
+		meUp.Calculate([]Coord{up}, b)
+		b.Data["me_up"] = meUp
+		b.AbleToVisitCount["up"] = meUp.Count
+	}
+
+	down := you.Head().Down()
+	if(b.IsEmpty(down)) {
+		meDown := &DistanceData{}
+		meDown.Calculate([]Coord{down}, b)
+		b.Data["me_down"] = meDown
+		b.AbleToVisitCount["down"] = meDown.Count
+	}
+
 	for _, snake := range b.Snakes {
 		b.Data[snake.ID] = &DistanceData{}
 		b.Data[snake.ID].Calculate(snake.Head().Adjacent(), b)
-	}
-
-	b.AbleToVisitCount = map[string]int{
-		"left": meLeft.Count,
-		"right": meRight.Count,
-		"up": meUp.Count,
-		"down": meDown.Count,
 	}
 }

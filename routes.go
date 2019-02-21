@@ -70,7 +70,6 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	if !exists {
 		games[sr.Game.ID] = []api.SnakeRequest{}
 	}
-	sr.Board.PopulateDistances(sr.You)
 	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
 	for _, l := range logics {

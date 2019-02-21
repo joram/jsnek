@@ -10,19 +10,21 @@ type DistanceData struct {
 	calculated bool
 }
 
-func (gd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
-	if gd.calculated {
+func (dd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
+	println(initalCoords)
+	if dd.calculated {
 		return
 	}
-	gd.InitialCoords = initalCoords
-	gd.board = board
-	gd.Count = 0
+	dd.InitialCoords = initalCoords
+	dd.board = board
+	dd.Count = 0
 
 	type toVisitCoord struct {
 		coord Coord
 		value int
 	}
 	toVisit := []toVisitCoord{}
+	haveVisited := map[Coord]bool{}
 	for _, c := range initalCoords {
 		toVisit = append(toVisit, toVisitCoord{c, 1})
 	}
@@ -31,7 +33,7 @@ func (gd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
 
 		// break
 		if len(toVisit) == 0 {
-			gd.calculated = true
+			dd.calculated = true
 			return
 		}
 
@@ -40,19 +42,21 @@ func (gd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
 		toVisit = toVisit[1:]
 
 		// skip
-		if gd.HasData(tvc.coord){
+		if(haveVisited[tvc.coord]){
 			continue
 		}
+		haveVisited[tvc.coord] = true
 
 		// visit
-		gd.AddData(tvc.coord, tvc.value)
-		gd.Count += 1
+		dd.AddData(tvc.coord, tvc.value)
+		dd.Count += 1
 
 		// iterate
 		for _, coord := range tvc.coord.Adjacent(){
-			if !gd.HasData(coord){
-				toVisit = append(toVisit, toVisitCoord{coord, tvc.value+1})
+			if haveVisited[coord] || !board.IsEmpty(coord){
+				continue
 			}
+			toVisit = append(toVisit, toVisitCoord{coord, tvc.value+1})
 		}
 	}
 
