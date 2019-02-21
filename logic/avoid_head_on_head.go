@@ -25,12 +25,16 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 	avoidSquares := []api.Coord{}
 	avoidSquares = append(avoidSquares, dangerCoords...)
 	for dir, coord := range sr.You.Head().AdjacentMap() {
+		badCoord := false
 		for _, dangerCoord := range dangerCoords {
 			if coord.Equal(dangerCoord) {
 				couldBeEaten = true
-			} else {
-				safeDirections = append(safeDirections, dir)
+				badCoord = true
+				break
 			}
+		}
+		if !badCoord {
+			safeDirections = append(safeDirections, dir)
 		}
 	}
 
