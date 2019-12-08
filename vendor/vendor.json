@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"checksumSHA1": "fRgQ6v9ELimeELdkrQ1nMcu6auQ=",
+			"path": "github.com/aws/aws-sdk-go/aws",
+			"revision": "2dfbfbc3d3a60ab6ef72537b890eff246f6cb1f2",
+			"revisionTime": "2019-12-05T01:38:42Z"
+		},
+		{
+			"checksumSHA1": "FBs8pkO3JCPbKIkDAzyQEcnZTJg=",
+			"path": "github.com/aws/aws-sdk-go/aws/session",
+			"revision": "2dfbfbc3d3a60ab6ef72537b890eff246f6cb1f2",
+			"revisionTime": "2019-12-05T01:38:42Z"
+		},
+		{
+			"checksumSHA1": "lBoIrqhmnwKify+AShcEgD5ZMIM=",
+			"path": "github.com/aws/aws-sdk-go/service/s3",
+			"revision": "2dfbfbc3d3a60ab6ef72537b890eff246f6cb1f2",
+			"revisionTime": "2019-12-05T01:38:42Z"
+		}
+	],
+	"rootPath": "github.com/joram/jsnek"
+}
