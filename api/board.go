@@ -31,15 +31,15 @@ func (b *Board) IsEmpty(c Coord) bool {
 			}
 		}
 
-		for i, coord := range snake.Body {
-			if i == len(snake.Body) - 1 {
-				if canEat && coord.Equal(c) {
-					return false
-				}
-
-				// is tail coordinate you can safely move in to
-				return true
-			}
+		for _, coord := range snake.Body {
+			//if i == len(snake.Body) - 1 {
+			//	if canEat && coord.Equal(c) {
+			//		return false
+			//	}
+			//
+			//	// is tail coordinate you can safely move in to
+			//	return true
+			//}
 			if coord.Equal(c) {
 				return false
 			}
