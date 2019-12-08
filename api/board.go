@@ -20,16 +20,16 @@ func (b *Board) IsEmpty(c Coord) bool {
 
 	for _, snake := range b.Snakes {
 
-		canEat := false
-		food, _ := b.ClosestFood(snake.Head())
-		if food != nil {
-			for _, c := range snake.Head().Adjacent() {
-				if c.Equal(*food) {
-					canEat = true
-					break
-				}
-			}
-		}
+		//canEat := false
+		//food, _ := b.ClosestFood(snake.Head())
+		//if food != nil {
+		//	for _, c := range snake.Head().Adjacent() {
+		//		if c.Equal(*food) {
+		//			canEat = true
+		//			break
+		//		}
+		//	}
+		//}
 
 		for _, coord := range snake.Body {
 			//if i == len(snake.Body) - 1 {
