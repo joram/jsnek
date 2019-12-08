@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
@@ -98,6 +99,19 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 }
 
 func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	sr := api.SnakeRequest{}
+	err := api.DecodeSnakeRequest(req, &sr)
+	if err != nil {
+		log.Printf("Bad end request: %v", err)
+	}
+
+	b, err := json.Marshal(games[sr.Game.ID])
+	if err != nil {
+		log.Printf("Bad end request: %v", err)
+	}
+	content := string(b)
+
+	logic.WriteToS3("jsnek", fmt.Sprintf("%s.json", sr.Game.ID), content)
 	return
 }
 
