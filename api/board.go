@@ -19,7 +19,27 @@ func (b *Board) IsEmpty(c Coord) bool {
 	}
 
 	for _, snake := range b.Snakes {
-		for _, coord := range snake.Body {
+
+		canEat := false
+		food, _ := b.ClosestFood(snake.Head())
+		if food != nil {
+			for _, c := range snake.Head().Adjacent() {
+				if c.Equal(*food) {
+					canEat = true
+					break
+				}
+			}
+		}
+
+		for i, coord := range snake.Body {
+			if i == len(snake.Body) - 1 {
+				if canEat && coord.Equal(c) {
+					return false
+				}
+
+				// is tail coordinate you can safely move in to
+				return true
+			}
 			if coord.Equal(c) {
 				return false
 			}
@@ -80,7 +100,6 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 	}
 	return sorted
 }
-
 
 func (b* Board) PopulateDistances(you Snake){
 	b.Data = map[string]*DistanceData{}

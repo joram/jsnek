@@ -11,17 +11,7 @@ func (ge GoEatOrthogonal) Taunt() string {
 }
 
 func (ge GoEatOrthogonal) Decision(sr *api.SnakeRequest) int {
-	longestSnakeLength := -1
-	for _, snake := range sr.Board.Snakes {
-		if snake.ID != sr.You.ID {
-			l := len(snake.Body)
-			if l > longestSnakeLength {
-				longestSnakeLength = l
-			}
-		}
-	}
-
-	if sr.You.Health > ge.HungryHealth && len(sr.You.Body) >= longestSnakeLength{
+	if sr.You.Health > ge.HungryHealth {
 		return api.UNKNOWN
 	}
 

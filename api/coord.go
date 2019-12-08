@@ -13,6 +13,7 @@ func (c Coord) AdjacentMap() map[string]Coord {
 		"left":{c.X - 1, c.Y + 0},
 	}
 }
+
 func (c Coord) Adjacent() []Coord {
 	return []Coord{
 		c.Up(),
@@ -20,6 +21,15 @@ func (c Coord) Adjacent() []Coord {
 		c.Left(),
 		c.Right(),
 	}
+}
+
+func (c Coord) IsAdjacent(other Coord) bool {
+	for _, a := range c.Adjacent() {
+		if a.Equal(other) {
+			return true
+		}
+	}
+	return false
 }
 
 func (c Coord) SurroundingCoords() []Coord {

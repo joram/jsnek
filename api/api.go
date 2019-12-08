@@ -15,6 +15,13 @@ const (
 	UNKNOWN
 )
 
+var DIRECTIONS = [...]int{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+}
+
 func DirToString(d int) string {
 	return map[int]string{
 		UP:      "up",

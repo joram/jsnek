@@ -13,16 +13,14 @@ import (
 
 var (
 	logics = []logic.Responsibility{
-		// NO OPTION
 		logic.OnlyOneChoice{},
 		logic.AvoidHeadOnHead{},
-		// ONLY ONE NOT THREATENED CHOICE
-		// HUNGRY (health level?) GO FOR FOOD
-		logic.GoEatOrthogonal{25},
-		// SHORTEST SNAKE GO FOR FOOD
-		// POTENTIAL KILL
+		logic.AvoidThreatened{},
+		logic.GoEatOrthogonal{HungryHealth: 25},
+		logic.ShortestSnake{LengthCompensation: 3},
+		logic.KillOnlyOneChoice{},
 		// EAT THEIR LUNCH (force them to starve)
-		logic.GoMoreRoom{3},
+		logic.GoMoreRoom{Ratio: 3},
 		logic.TrapFood{},
 		logic.ValidDirection{},
 	}
