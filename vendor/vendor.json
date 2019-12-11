@@ -22,6 +22,13 @@
 			"revisionTime": "2018-02-06T20:15:40Z"
 		},
 		{
+			"checksumSHA1": "P34KfSRk2R046ow8JGwxPdzkqew=",
+			"path": "github.com/julienschmidt/httprouter",
+			"revision": "08a3b3d20bbeeab9ca4889bcdb65fec0423ef882",
+			"revisionTime": "2019-10-05T17:17:06Z",
+			"tree": true
+		},
+		{
 			"checksumSHA1": "SVinfxcBSupb3+HEKpSBYFZ4Bh4=",
 			"path": "github.com/pkg/errors",
 			"revision": "7f95ac13edff643b8ce5398b6ccab125f8a20c1a",
