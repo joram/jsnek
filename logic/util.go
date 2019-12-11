@@ -39,4 +39,7 @@ func WriteToS3(bucket, key, content string){
 		ContentDisposition:   aws.String("attachment"),
 		ServerSideEncryption: aws.String("AES256"),
 	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }

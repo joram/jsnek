@@ -99,6 +99,7 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 }
 
 func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	fmt.Println("writing game to S3")
 	sr := api.SnakeRequest{}
 	err := api.DecodeSnakeRequest(req, &sr)
 	if err != nil {
