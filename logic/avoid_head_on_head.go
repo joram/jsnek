@@ -42,7 +42,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 	}
 
 	// Could Head on Head
-	if couldBeEaten {
+	if couldBeEaten && len(safeDirections) > 0 {
 		i := rand.Intn(len(safeDirections))
 		safeDir := safeDirections[i]
 		return api.StringToDir(safeDir)
