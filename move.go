@@ -45,18 +45,18 @@ func move(request api.SnakeRequest) string {
 	for logic, weight := range logics {
 		choice := logic.Decision(&request)
 		direction := directionStrings[choice]
-		fmt.Printf("Logic says: %s\t%d", direction, weight)
+		fmt.Printf("Logic says: %s\t%d\n", direction, weight)
 		directions[direction] += weight
 	}
 
 	bestDirection := directionStrings[api.UP]
 	bestWeight := -1
 	for direction, weight := range directions {
-		if weight > bestWeight {
+		if weight > bestWeight && direction != directionStrings[api.UNKNOWN] {
 			bestWeight = weight
 			bestDirection = direction
 		}
-		fmt.Printf("Weight says: %s\t%d", direction, weight)
+		fmt.Printf("Weight says: %s\t%d\n", direction, weight)
 	}
 	return bestDirection
 
