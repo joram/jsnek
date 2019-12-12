@@ -17,7 +17,7 @@ func Max(x, y int) int {
 }
 
 func WriteToS3(bucket, key, content string){
-	s, err := session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
+	s, err := session.NewSession(&aws.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
