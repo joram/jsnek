@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/joram/jsnek/api"
-	"github.com/joram/jsnek/filters"
-	"github.com/joram/jsnek/logic"
 	"github.com/joram/jsnek/util"
 	"github.com/julienschmidt/httprouter"
 	"html/template"
