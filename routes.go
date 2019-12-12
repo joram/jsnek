@@ -6,6 +6,7 @@ import (
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
+	"github.com/joram/jsnek/util"
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"log"
@@ -13,29 +14,6 @@ import (
 )
 
 var (
-	logics = []logic.Responsibility{
-		logic.OnlyOneChoice{},
-		logic.AvoidHeadOnHead{},
-		logic.AvoidThreatened{},
-		logic.GoEatOrthogonal{HungryHealth: 25},
-		logic.ShortestSnake{LengthCompensation: 3},
-		logic.KillOnlyOneChoice{},
-		// EAT THEIR LUNCH (force them to starve)
-		logic.GoMoreRoom{Ratio: 3},
-		logic.TrapFood{},
-		logic.ValidDirection{},
-	}
-	directionStrings = map[int]string{
-		api.UP: "up",
-		api.DOWN: "down",
-		api.LEFT: "left",
-		api.RIGHT: "right",
-		api.UNKNOWN: "WFT!",
-	}
-	decisionFilters = []filters.DecisionFilter{
-		filters.IsUnknownFilter{},
-		filters.IsSolidFilter{},
-	}
 	games = map[string][]api.SnakeRequest{
 			"example": []api.SnakeRequest{{
 				Game:api.Game{ID:"123"},
@@ -70,36 +48,10 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
-	for _, l := range logics {
-		choice := l.Decision(&sr)
-		okChoice := true
-		for _, filter := range decisionFilters {
-			ok, _ := filter.Allowed(choice, &sr)
-			if !ok {
-				okChoice = false
-				break
-			}
-		}
-		if choice == api.UNKNOWN {
-			continue
-		}
-		if !okChoice {
-			println("skipping choice "+directionStrings[choice]+" by "+l.Taunt())
-			continue
-		}
-		fmt.Println(sr.Game.ID, l.Taunt())
-		respond(res, api.MoveResponse{
-			Move:  directionStrings[choice],
-			Taunt: l.Taunt(),
-		})
-		return
-	}
-
-	respond(res, api.MoveResponse{Move: "down"})
+	respond(res, api.MoveResponse{Move: move(sr)})
 }
 
 func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	fmt.Println("writing game to S3")
 	sr := api.SnakeRequest{}
 	err := api.DecodeSnakeRequest(req, &sr)
 	if err != nil {
@@ -112,7 +64,7 @@ func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 	content := string(b)
 
-	logic.WriteToS3("jsnek", fmt.Sprintf("%s.json", sr.Game.ID), content)
+	util.WriteToS3("jsnek", fmt.Sprintf("%s.json", sr.Game.ID), content)
 	return
 }
 

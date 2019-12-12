@@ -1,9 +1,10 @@
-package logic
+package util
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -42,4 +43,26 @@ func WriteToS3(bucket, key, content string){
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func GetFromS3(bucket, key string) []byte {
+	s, err := session.NewSession(&aws.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	resp, err := s3.New(s).GetObject(&s3.GetObjectInput{
+		Bucket:aws.String(bucket),
+		Key:aws.String(key),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s3objectBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return s3objectBytes
 }
