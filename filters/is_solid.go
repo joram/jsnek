@@ -2,9 +2,9 @@ package filters
 
 import "github.com/joram/jsnek/api"
 
-type IsSolidFilter struct {}
+type IsSolidFilter struct{}
 
-func (isf IsSolidFilter) Description() string {return "is solid"}
+func (isf IsSolidFilter) Description() string { return "is solid" }
 func (isf IsSolidFilter) Allowed(direction int, sr *api.SnakeRequest) (bool, error) {
 	coord, err := sr.You.Head().Offset(direction)
 	if err != nil {

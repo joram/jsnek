@@ -27,15 +27,15 @@ func (ge GoMoreRoom) Decision(sr *api.SnakeRequest) int {
 			biggestDir = dir
 		}
 	}
-	avgRoomAvail := sumRoomAvail/dirCounts
+	avgRoomAvail := sumRoomAvail / dirCounts
 
 	if float32(biggest)/float32(avgRoomAvail) > ge.Ratio {
 		d := map[string]int{
-			"up": api.UP,
-			"down": api.DOWN,
-			"left": api.LEFT,
-			"right":api.RIGHT,
-			"WFT!": api.UNKNOWN,
+			"up":    api.UP,
+			"down":  api.DOWN,
+			"left":  api.LEFT,
+			"right": api.RIGHT,
+			"WFT!":  api.UNKNOWN,
 		}[biggestDir]
 
 		return d

@@ -9,17 +9,17 @@ import (
 )
 
 type FailedGame struct {
-	gameID string
-	turn int
+	gameID          string
+	turn            int
 	validDirections []int
-	gameRequest *api.SnakeRequest
+	gameRequest     *api.SnakeRequest
 }
 
-func failedGames() []FailedGame{
+func failedGames() []FailedGame {
 	var failedGames = []FailedGame{
 		{
-			gameID: "25f58e9b-d100-4ce6-851c-e3e6769ae48f",
-			turn:116,
+			gameID:          "25f58e9b-d100-4ce6-851c-e3e6769ae48f",
+			turn:            116,
 			validDirections: []int{api.LEFT, api.DOWN},
 		},
 	}

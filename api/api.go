@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-
 const (
 	UP = iota
 	DOWN
@@ -34,11 +33,11 @@ func DirToString(d int) string {
 
 func StringToDir(s string) int {
 	return map[string]int{
-		"up": UP,
-		"down": DOWN,
-		"left": LEFT,
-		"right":RIGHT,
-		"WFT!": UNKNOWN,
+		"up":    UP,
+		"down":  DOWN,
+		"left":  LEFT,
+		"right": RIGHT,
+		"WFT!":  UNKNOWN,
 	}[s]
 }
 
@@ -59,12 +58,12 @@ type Snake struct {
 }
 
 type Board struct {
-	Height           int                     `json:"height"`
-	Width            int                     `json:"width"`
-	Food             []Coord                 `json:"food"`
-	Snakes           []Snake                 `json:"snakes"`
+	Height           int                      `json:"height"`
+	Width            int                      `json:"width"`
+	Food             []Coord                  `json:"food"`
+	Snakes           []Snake                  `json:"snakes"`
 	Data             map[string]*DistanceData `json:"data"`
-	AbleToVisitCount map[string]int `json:"able_to_visit"`
+	AbleToVisitCount map[string]int           `json:"able_to_visit"`
 }
 
 type Game struct {

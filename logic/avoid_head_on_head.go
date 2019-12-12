@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-type AvoidHeadOnHead struct {}
+type AvoidHeadOnHead struct{}
 
 func (ge AvoidHeadOnHead) Taunt() string {
 	return "Avoid Potential Collision"
@@ -15,7 +15,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 
 	dangerCoords := []api.Coord{}
 	for _, snake := range sr.Board.Snakes {
-		if snake.ID != sr.You.ID && len(snake.Body) >= len(sr.You.Body){
+		if snake.ID != sr.You.ID && len(snake.Body) >= len(sr.You.Body) {
 			dangerCoords = append(dangerCoords, snake.Head().Adjacent()...)
 		}
 	}
@@ -35,7 +35,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 		if badCoord {
 			couldBeEaten = true
 		} else {
-			if sr.Board.IsEmpty(coord){
+			if sr.Board.IsEmpty(coord) {
 				safeDirections = append(safeDirections, dir)
 			}
 		}

@@ -3,11 +3,11 @@ package api
 import "errors"
 
 type DistanceData struct {
-	InitialCoords []Coord `json:"initial_coords"`
-	Data map[int]map[int]int `json:"data"`
-	Count int `json:"count"`
-	board *Board
-	calculated bool
+	InitialCoords []Coord             `json:"initial_coords"`
+	Data          map[int]map[int]int `json:"data"`
+	Count         int                 `json:"count"`
+	board         *Board
+	calculated    bool
 }
 
 func (dd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
@@ -41,7 +41,7 @@ func (dd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
 		toVisit = toVisit[1:]
 
 		// skip
-		if(haveVisited[tvc.coord]){
+		if haveVisited[tvc.coord] {
 			continue
 		}
 		haveVisited[tvc.coord] = true
@@ -51,17 +51,17 @@ func (dd *DistanceData) Calculate(initalCoords []Coord, board *Board) {
 		dd.Count += 1
 
 		// iterate
-		for _, coord := range tvc.coord.Adjacent(){
-			if haveVisited[coord] || !board.IsEmpty(coord){
+		for _, coord := range tvc.coord.Adjacent() {
+			if haveVisited[coord] || !board.IsEmpty(coord) {
 				continue
 			}
-			toVisit = append(toVisit, toVisitCoord{coord, tvc.value+1})
+			toVisit = append(toVisit, toVisitCoord{coord, tvc.value + 1})
 		}
 	}
 
 }
 
-func (b *DistanceData) AddData(c Coord, val int){
+func (b *DistanceData) AddData(c Coord, val int) {
 	if b.Data == nil {
 		b.Data = map[int]map[int]int{}
 	}
@@ -86,7 +86,7 @@ func (b *DistanceData) HasData(c Coord) bool {
 	return exists
 }
 
-func (b *DistanceData) GetData(c Coord) (int, error){
+func (b *DistanceData) GetData(c Coord) (int, error) {
 	err := errors.New("nothing at coord")
 	if b.Data == nil {
 		return 0, err
@@ -102,5 +102,3 @@ func (b *DistanceData) GetData(c Coord) (int, error){
 	}
 	return val, nil
 }
-
-

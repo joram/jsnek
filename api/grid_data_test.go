@@ -38,46 +38,42 @@ var mockReq2 = `{
 	}
 }`
 
-
 func TestBoardControl(t *testing.T) {
 	expected := SnakeRequest{
 		Game: Game{
-			ID:"abc",
+			ID: "abc",
 		},
 		Turn: 10,
 		Board: Board{
-			Width: 10,
+			Width:  10,
 			Height: 10,
 			Food: []Coord{
-			   Coord{1,1},
-		  },
-		  Snakes: []Snake{
-			{
-				ID: "123",
-				Name: "snek",
-				Health: 1,
-				Body: []Coord{
-					Coord{1,1},
+				Coord{1, 1},
+			},
+			Snakes: []Snake{
+				{
+					ID:     "123",
+					Name:   "snek",
+					Health: 1,
+					Body: []Coord{
+						Coord{1, 1},
+					},
 				},
 			},
-	      },
-
 		},
 		You: Snake{
-			ID: "123",
-			Name: "snek",
+			ID:     "123",
+			Name:   "snek",
 			Health: 1,
 			Body: []Coord{
-				Coord{1,1},
+				Coord{1, 1},
 			},
 		},
-
 	}
 
 	result := SnakeRequest{}
 	req := requestWithBody(mockReq2)
 	err := DecodeSnakeRequest(req, &result)
-
 
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)

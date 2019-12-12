@@ -17,7 +17,7 @@ func Max(x, y int) int {
 	return x
 }
 
-func WriteToS3(bucket, key, content string){
+func WriteToS3(bucket, key, content string) {
 	s, err := session.NewSession(&aws.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -52,8 +52,8 @@ func GetFromS3(bucket, key string) []byte {
 	}
 
 	resp, err := s3.New(s).GetObject(&s3.GetObjectInput{
-		Bucket:aws.String(bucket),
-		Key:aws.String(key),
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
 	})
 	if err != nil {
 		log.Fatal(err)

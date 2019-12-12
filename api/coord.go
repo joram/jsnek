@@ -7,10 +7,10 @@ import (
 
 func (c Coord) AdjacentMap() map[string]Coord {
 	return map[string]Coord{
-		"down":{c.X + 0, c.Y + 1},
-		"up":{c.X + 0, c.Y - 1},
-		"right":{c.X + 1, c.Y + 0},
-		"left":{c.X - 1, c.Y + 0},
+		"down":  {c.X + 0, c.Y + 1},
+		"up":    {c.X + 0, c.Y - 1},
+		"right": {c.X + 1, c.Y + 0},
+		"left":  {c.X - 1, c.Y + 0},
 	}
 }
 
@@ -51,11 +51,10 @@ func (c Coord) Equal(other Coord) bool {
 	return c.X == other.X && c.Y == other.Y
 }
 
-func (c Coord) Left() Coord { return Coord{X:c.X-1, Y:c.Y}}
-func (c Coord) Right() Coord { return Coord{X:c.X+1, Y:c.Y}}
-func (c Coord) Up() Coord { return Coord{X:c.X, Y:c.Y-1}}
-func (c Coord) Down() Coord { return Coord{X:c.X, Y:c.Y+1}}
-
+func (c Coord) Left() Coord  { return Coord{X: c.X - 1, Y: c.Y} }
+func (c Coord) Right() Coord { return Coord{X: c.X + 1, Y: c.Y} }
+func (c Coord) Up() Coord    { return Coord{X: c.X, Y: c.Y - 1} }
+func (c Coord) Down() Coord  { return Coord{X: c.X, Y: c.Y + 1} }
 
 func (c Coord) DirectionTo(other Coord) int {
 	xd := other.X - c.X

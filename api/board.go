@@ -37,7 +37,6 @@ func (b *Board) IsEmpty(c Coord) bool {
 	return true
 }
 
-
 func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	foundFood := false
 	closestFood := Coord{}
@@ -90,17 +89,17 @@ func (b *Board) OrderedClosestFood(c Coord) []Coord {
 	return sorted
 }
 
-func (b* Board) PopulateDistances(you Snake){
+func (b *Board) PopulateDistances(you Snake) {
 	b.Data = map[string]*DistanceData{}
 	b.AbleToVisitCount = map[string]int{
-		"left": 0,
+		"left":  0,
 		"right": 0,
-		"up": 0,
-		"down": 0,
+		"up":    0,
+		"down":  0,
 	}
 
 	left := you.Head().Left()
-	if(b.IsEmpty(left)){
+	if b.IsEmpty(left) {
 		meLeft := &DistanceData{}
 		meLeft.Calculate([]Coord{left}, b)
 		b.Data["me_left"] = meLeft
@@ -108,7 +107,7 @@ func (b* Board) PopulateDistances(you Snake){
 	}
 
 	right := you.Head().Right()
-	if(b.IsEmpty(right)) {
+	if b.IsEmpty(right) {
 		meRight := &DistanceData{}
 		meRight.Calculate([]Coord{right}, b)
 		b.Data["me_right"] = meRight
@@ -116,7 +115,7 @@ func (b* Board) PopulateDistances(you Snake){
 	}
 
 	up := you.Head().Up()
-	if(b.IsEmpty(up)) {
+	if b.IsEmpty(up) {
 		meUp := &DistanceData{}
 		meUp.Calculate([]Coord{up}, b)
 		b.Data["me_up"] = meUp
@@ -124,7 +123,7 @@ func (b* Board) PopulateDistances(you Snake){
 	}
 
 	down := you.Head().Down()
-	if(b.IsEmpty(down)) {
+	if b.IsEmpty(down) {
 		meDown := &DistanceData{}
 		meDown.Calculate([]Coord{down}, b)
 		b.Data["me_down"] = meDown

@@ -13,11 +13,11 @@ import (
 
 var (
 	games = map[string][]api.SnakeRequest{
-			"example": []api.SnakeRequest{{
-				Game:api.Game{ID:"123"},
-				Turn:1,
-				You: exampleBoard.Snakes[0],
-			}},
+		"example": []api.SnakeRequest{{
+			Game: api.Game{ID: "123"},
+			Turn: 1,
+			You:  exampleBoard.Snakes[0],
+		}},
 	}
 )
 
@@ -72,7 +72,7 @@ func Ping(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 
 func Debug(res http.ResponseWriter, req *http.Request, params httprouter.Params) {
 	gameID := params.ByName("gameID")
-	if gameID == ""{
+	if gameID == "" {
 		const tpl = `<!DOCTYPE html><html><body>
 		{{range .Games}}<div><a href="/debug/{{ . }}">{{ . }}</a></div>{{else}}<div><strong>no games</strong></div>{{end}}
 	</body></html>`
@@ -85,7 +85,7 @@ func Debug(res http.ResponseWriter, req *http.Request, params httprouter.Params)
 		for n, _ := range games {
 			gamesNames = append(gamesNames, n)
 		}
-		renderContext := struct {Games []string}{
+		renderContext := struct{ Games []string }{
 			Games: gamesNames,
 		}
 		t.Execute(res, renderContext)
@@ -116,9 +116,8 @@ func Debug(res http.ResponseWriter, req *http.Request, params httprouter.Params)
 		log.Fatal(err)
 	}
 
-	renderContext := struct {SnakeRequests []api.SnakeRequest}{
+	renderContext := struct{ SnakeRequests []api.SnakeRequest }{
 		SnakeRequests: games[gameID],
 	}
 	t.Execute(res, renderContext)
 }
-

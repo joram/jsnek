@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	"github.com/julienschmidt/httprouter"
 	"os"
 )
 
@@ -20,7 +20,6 @@ func main() {
 	router.GET("/debug", Debug)
 	router.GET("/debug/:gameID", Debug)
 	router.GET("/static/*filepath", Static)
-
 
 	port := os.Getenv("PORT")
 	if port == "" {
