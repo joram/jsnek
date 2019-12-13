@@ -19,3 +19,4 @@ func (sr SnakeRequest) OtherSnakes() []Snake {
 	}
 	return otherSnakes
 }
+

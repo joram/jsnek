@@ -55,6 +55,7 @@ func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Printf("Bad end request: %v", err)
 	}
+	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
 	b, err := json.Marshal(games[sr.Game.ID])
 	if err != nil {
