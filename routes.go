@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 var (
@@ -63,7 +64,8 @@ func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 	content := string(b)
 
-	util.WriteToS3("jsnek", fmt.Sprintf("%s.json", sr.Game.ID), content)
+	timeStr := time.Now().Format("2006-01")
+	util.WriteToS3("jsnek", fmt.Sprintf("%s/%s.json", timeStr, sr.Game.ID), content)
 	return
 }
 
