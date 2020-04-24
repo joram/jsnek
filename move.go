@@ -41,8 +41,8 @@ func move(request api.SnakeRequest) string {
 		directionStrings[api.RIGHT]: 0,
 	}
 
-	for logic, weight := range logics {
-		choice := logic.Decision(&request)
+	for l, weight := range logics {
+		choice := l.Decision(&request)
 		direction := directionStrings[choice]
 		directions[direction] += weight
 	}

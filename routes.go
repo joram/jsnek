@@ -1,15 +1,11 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/joram/jsnek/api"
-	"github.com/joram/jsnek/util"
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 )
 
 var (
@@ -58,14 +54,14 @@ func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
-	b, err := json.Marshal(games[sr.Game.ID])
-	if err != nil {
-		log.Printf("Bad end request: %v", err)
-	}
-	content := string(b)
+	//b, err := json.Marshal(games[sr.Game.ID])
+	//if err != nil {
+	//	log.Printf("Bad end request: %v", err)
+	//}
+	//content := string(b)
 
-	timeStr := time.Now().Format("2006-01")
-	util.WriteToS3("jsnek", fmt.Sprintf("%s/%s.json", timeStr, sr.Game.ID), content)
+	//timeStr := time.Now().Format("2006-01")
+	//util.WriteToS3("jsnek", fmt.Sprintf("%s/%s.json", timeStr, sr.Game.ID), content)
 	return
 }
 
