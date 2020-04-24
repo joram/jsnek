@@ -9,6 +9,18 @@ import (
 )
 
 var (
+	orderedLogics = []logic.Responsibility{
+		logic.OnlyOneChoice{},
+		logic.AvoidHeadOnHead{},
+		logic.AvoidThreatened{},
+		logic.GoEatOrthogonal{HungryHealth: 25},
+		logic.ShortestSnake{LengthCompensation: 3},
+		logic.GoToClosestTail{},
+		logic.KillOnlyOneChoice{},
+		logic.TrapFood{},
+		logic.GoMoreRoom{Ratio: 3},
+		logic.ValidDirection{},
+	}
 	logics = map[logic.Responsibility]int{
 		logic.OnlyOneChoice{}:                      1000,
 		logic.AvoidHeadOnHead{}:                    10,
@@ -55,7 +67,8 @@ func reverseInts(input []int) []int {
 
 
 func move(request api.SnakeRequest) string {
-	return move_weighted(request)
+	//return move_weighted(request)
+	return move_sequential_check(request)
 }
 
 func move_weighted(request api.SnakeRequest) string {
@@ -94,7 +107,7 @@ func move_weighted(request api.SnakeRequest) string {
 
 func move_sequential_check(request api.SnakeRequest) string {
 
-	for l, _ := range logics {
+	for _, l := range orderedLogics {
 		choice := l.Decision(&request)
 		if choice == api.UNKNOWN {
 			continue
