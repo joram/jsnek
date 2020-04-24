@@ -30,6 +30,7 @@ var (
 	decisionFilters = []filters.DecisionFilter{
 		filters.IsUnknownFilter{},
 		filters.IsSolidFilter{},
+		filters.IsThreatenedFilter{},
 	}
 )
 
@@ -84,4 +85,5 @@ func move(request api.SnakeRequest) string {
 		fmt.Println(request.Game.ID, l.Taunt())
 		return directionStrings[choice]
 	}
+	return "up"
 }
