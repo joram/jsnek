@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
@@ -113,10 +112,15 @@ func move_sequential_check(request api.SnakeRequest) string {
 			continue
 		}
 		if !isGoodDecision(choice, request) {
-			println("skipping choice " + directionStrings[choice] + " by " + l.Taunt())
 			continue
 		}
-		fmt.Println(request.Game.ID, l.Taunt())
+		return directionStrings[choice]
+	}
+	for _, l := range orderedLogics {
+		choice := l.Decision(&request)
+		if choice == api.UNKNOWN {
+			continue
+		}
 		return directionStrings[choice]
 	}
 	return "up"
