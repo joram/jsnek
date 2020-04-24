@@ -5,6 +5,7 @@ import (
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
+	"sort"
 )
 
 var (
@@ -34,6 +35,28 @@ var (
 	}
 )
 
+func isGoodDecision(choice int, request api.SnakeRequest) bool {
+	for _, filter := range decisionFilters {
+		ok, _ := filter.Allowed(choice, &request)
+		if !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func reverseInts(input []int) []int {
+	if len(input) == 0 {
+		return input
+	}
+	return append(reverseInts(input[1:]), input[0])
+}
+
+
+func move(request api.SnakeRequest) string {
+	return move_weighted(request)
+}
+
 func move_weighted(request api.SnakeRequest) string {
 	directions := map[string]int{
 		directionStrings[api.UP]:    0,
@@ -48,37 +71,34 @@ func move_weighted(request api.SnakeRequest) string {
 		directions[direction] += weight
 	}
 
-	bestDirection := directionStrings[api.UP]
-	bestWeight := -1
-	for direction, weight := range directions {
-		if direction == directionStrings[api.UNKNOWN] {
+	weights := []int{}
+	weightMap := map[int]string{}
+	for k, v := range directions {
+		weightMap[v] = k
+		weights = append(weights, v)
+	}
+	sort.Ints(weights)
+	reverseInts(weights)
+
+	for _, weight := range weights {
+		direction := weightMap[weight]
+		directionInt := api.StringToDir(direction)
+		if !isGoodDecision(directionInt, request) {
 			continue
 		}
-		if weight > bestWeight {
-			bestWeight = weight
-			bestDirection = direction
-		}
-		fmt.Printf("Weight says: \t%s\t%d\n", direction, weight)
+		return direction
 	}
-	return bestDirection
+	return weightMap[weights[0]]
 }
 
-func move(request api.SnakeRequest) string {
+func move_sequential_check(request api.SnakeRequest) string {
 
 	for l, _ := range logics {
 		choice := l.Decision(&request)
-		okChoice := true
-		for _, filter := range decisionFilters {
-			ok, _ := filter.Allowed(choice, &request)
-			if !ok {
-				okChoice = false
-				break
-			}
-		}
 		if choice == api.UNKNOWN {
 			continue
 		}
-		if !okChoice {
+		if !isGoodDecision(choice, request) {
 			println("skipping choice " + directionStrings[choice] + " by " + l.Taunt())
 			continue
 		}
