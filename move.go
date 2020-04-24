@@ -33,7 +33,7 @@ var (
 	}
 )
 
-func move(request api.SnakeRequest) string {
+func move_weighted(request api.SnakeRequest) string {
 	directions := map[string]int{
 		directionStrings[api.UP]:    0,
 		directionStrings[api.DOWN]:  0,
@@ -60,27 +60,28 @@ func move(request api.SnakeRequest) string {
 		fmt.Printf("Weight says: \t%s\t%d\n", direction, weight)
 	}
 	return bestDirection
+}
 
-	//okChoice := true
-	//for _, filter := range decisionFilters {
-	//	ok, _ := filter.Allowed(choice, &sr)
-	//	if !ok {
-	//		okChoice = false
-	//		break
-	//	}
-	//}
-	//if choice == api.UNKNOWN {
-	//	continue
-	//}
-	//if !okChoice {
-	//	println("skipping choice "+directionStrings[choice]+" by "+l.Taunt())
-	//	continue
-	//}
-	//fmt.Println(sr.Game.ID, l.Taunt())
-	//respond(res, api.MoveResponse{
-	//	Move:  directionStrings[choice],
-	//	Taunt: l.Taunt(),
-	//})
-	//return
+func move(request api.SnakeRequest) string {
 
+	for l, _ := range logics {
+		choice := l.Decision(&request)
+		okChoice := true
+		for _, filter := range decisionFilters {
+			ok, _ := filter.Allowed(choice, &request)
+			if !ok {
+				okChoice = false
+				break
+			}
+		}
+		if choice == api.UNKNOWN {
+			continue
+		}
+		if !okChoice {
+			println("skipping choice " + directionStrings[choice] + " by " + l.Taunt())
+			continue
+		}
+		fmt.Println(request.Game.ID, l.Taunt())
+		return directionStrings[choice]
+	}
 }
