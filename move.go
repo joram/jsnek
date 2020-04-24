@@ -15,6 +15,7 @@ var (
 		logic.AvoidThreatened{}:                    10,
 		logic.GoEatOrthogonal{HungryHealth: 25}:    1,
 		logic.ShortestSnake{LengthCompensation: 3}: 1,
+		logic.GoToClosestTail{}: 					10,
 		logic.KillOnlyOneChoice{}:                  1,
 		logic.GoMoreRoom{Ratio: 3}:                 20,
 		logic.TrapFood{}:                           1,

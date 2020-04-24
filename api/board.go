@@ -57,6 +57,13 @@ func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	return &closestFood, nil
 }
 
+func (b *Board) ClosestTail(c Coord) Coord {
+	tails := []Coord{}
+	for _, snake := range b.Snakes {
+		tails = append(tails, snake.Tail())
+	}
+	return closest(c, tails)
+}
 func closest(c Coord, coords []Coord) Coord {
 	foundFood := false
 	closestFood := Coord{}
