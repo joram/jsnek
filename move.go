@@ -66,6 +66,9 @@ func reverseInts(input []int) []int {
 
 
 func move(request api.SnakeRequest) string {
+	if len(request.OtherSnakes()) == 0 {
+		return move_singleplayer(request)
+	}
 	//return move_weighted(request)
 	return move_sequential_check(request)
 }
@@ -124,4 +127,42 @@ func move_sequential_check(request api.SnakeRequest) string {
 		return directionStrings[choice]
 	}
 	return "up"
+}
+
+func move_singleplayer(request api.SnakeRequest) string {
+	head := request.You.Head()
+
+
+	if head.Y == request.Board.Height - 1 {
+
+		if head.X == 0 {
+			return "up"
+		}
+		return "left"
+	}
+
+	// zig zag down the right side
+	l := request.Board.Width - 2
+	r := request.Board.Width - 1
+	if head.X == l || head.X == r {
+		t := head.X + head.Y
+		if t % 2 == 0 {
+			return "down"
+		}
+		if head.X == r {
+			return "left"
+		}
+		return "right"
+	}
+
+	if head.Y == 0 && head.X % 2 == 0 {
+		return "right"
+	}
+	if head.Y == request.Board.Height - 2 && head.X % 2 == 1 {
+		return "right"
+	}
+	if head.X % 2 == 0 {
+		return "up"
+	}
+	return "down"
 }
