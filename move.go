@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
@@ -44,15 +45,19 @@ var (
 		filters.IsUnknownFilter{},
 		filters.IsSolidFilter{},
 		filters.IsThreatenedFilter{},
+		filters.IsSmallSpace{},
 	}
 )
 
 func isGoodDecision(choice int, request api.SnakeRequest) bool {
 	for _, filter := range decisionFilters {
 		ok, _ := filter.Allowed(choice, &request)
+
 		if !ok {
+			fmt.Printf("'%s' failed!\n", filter.Description())
 			return false
 		}
+		fmt.Printf("'%s' is ok\n", filter.Description())
 	}
 	return true
 }
@@ -66,9 +71,9 @@ func reverseInts(input []int) []int {
 
 
 func move(request api.SnakeRequest) string {
-	if len(request.OtherSnakes()) == 0 {
-		return move_singleplayer(request)
-	}
+	//if len(request.OtherSnakes()) == 0 {
+	//	return move_singleplayer(request)
+	//}
 	//return move_weighted(request)
 	return move_sequential_check(request)
 }
@@ -114,6 +119,7 @@ func move_sequential_check(request api.SnakeRequest) string {
 		if choice == api.UNKNOWN {
 			continue
 		}
+		fmt.Printf("considering going %s\n", api.DirToString(choice))
 		if !isGoodDecision(choice, request) {
 			continue
 		}

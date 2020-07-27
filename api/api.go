@@ -78,8 +78,13 @@ type SnakeRequest struct {
 }
 
 type StartResponse struct {
+	APIVersion int `json:"apiversion,omitempty"`
+	Author string `json:"author,omitempty"`
 	Color string `json:"color,omitempty"`
+	Head string `json:"head,omitempty"`
+	Tail string `json:"tail,omitempty"`
 }
+
 
 type MoveResponse struct {
 	Move  string `json:"move"`

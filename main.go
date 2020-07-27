@@ -13,6 +13,7 @@ func Static(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 func main() {
 	router := httprouter.New()
+	router.GET("/", Start)
 	router.POST("/start", Start)
 	router.POST("/move", Move)
 	router.POST("/end", End)

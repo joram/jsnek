@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 var (
@@ -26,11 +28,17 @@ func Start(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 
 	respond(res, api.StartResponse{
+		APIVersion: 1,
+		Author: "John Oram",
 		Color: "#75CEDD",
+		Head: "beluga",
+		Tail: "curled",
 	})
+
 }
 
 func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	start := time.Now()
 	sr := api.SnakeRequest{}
 	err := api.DecodeSnakeRequest(req, &sr)
 	if err != nil {
@@ -43,7 +51,10 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
-	respond(res, api.MoveResponse{Move: move(sr)})
+	response := api.MoveResponse{Move: move(sr)}
+	delta := time.Since(start)
+	fmt.Printf("took %s\n", delta)
+	respond(res, response)
 }
 
 func End(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
