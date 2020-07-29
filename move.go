@@ -57,7 +57,6 @@ func isGoodDecision(choice int, request api.SnakeRequest) bool {
 			fmt.Printf("'%s' failed!\n", filter.Description())
 			return false
 		}
-		fmt.Printf("'%s' is ok\n", filter.Description())
 	}
 	return true
 }
@@ -71,9 +70,9 @@ func reverseInts(input []int) []int {
 
 
 func move(request api.SnakeRequest) string {
-	//if len(request.OtherSnakes()) == 0 {
-	//	return move_singleplayer(request)
-	//}
+	if len(request.OtherSnakes()) == 0 {
+		return move_singleplayer(request)
+	}
 	//return move_weighted(request)
 	return move_sequential_check(request)
 }

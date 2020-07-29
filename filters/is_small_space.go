@@ -13,16 +13,15 @@ func (iss IsSmallSpace) Description() string { return "is small space" }
 
 func (iss IsSmallSpace) Allowed(direction int, sr *api.SnakeRequest) (bool, error) {
 
-	//emptySurroundingCoords := 0
-	//for _, a := range sr.You.Head().SurroundingCoords() {
-	//	if sr.Board.IsEmpty(a){
-	//		emptySurroundingCoords += 1
-	//	}
-	//}
-	//if emptySurroundingCoords >= 7 {
-	//	fmt.Println("skipping small space check")
-	//	return true, nil
-	//}
+	emptySurroundingCoords := 0
+	for _, a := range sr.You.Head().SurroundingCoords() {
+		if sr.Board.IsEmpty(a){
+			emptySurroundingCoords += 1
+		}
+	}
+	if emptySurroundingCoords >= 7 {
+		return true, nil
+	}
 
 	coords := map[int]int{
 		api.UP: len(accessibleCoords(sr.You.Head().Up(), []api.Coord{}, sr)),
@@ -41,14 +40,11 @@ func (iss IsSmallSpace) Allowed(direction int, sr *api.SnakeRequest) (bool, erro
 	}
 	avg := sum/goodPaths
 	fmt.Printf("up: %d, down:%d, left:%d, right:%d, avg:%d\n", coords[api.UP], coords[api.DOWN], coords[api.LEFT], coords[api.RIGHT], avg)
-	if avg - coords[direction] > 10 {
-		fmt.Println("is too small")
+	if float64(coords[direction])/float64(avg) < float64(0.8) {
 		return false, nil
 	}
-	fmt.Println("is big enough")
 	return true, nil
 }
-
 
 func accessibleCoords(from api.Coord, alreadyVisitedCoords []api.Coord, sr *api.SnakeRequest) []api.Coord {
 	visited := map[api.Coord]bool{}
@@ -90,39 +86,4 @@ func accessibleCoords(from api.Coord, alreadyVisitedCoords []api.Coord, sr *api.
 	}
 	return accessible
 
-}
-
-func accessibleCoordsOld(from api.Coord, alreadyVisitedCoords []api.Coord, sr *api.SnakeRequest) []api.Coord {
-
-	// solid
-	if !sr.Board.IsEmpty(from) {
-		return []api.Coord{}
-	}
-
-	// already visited
-	for _, visitedCoord := range alreadyVisitedCoords {
-		if from.Equal(visitedCoord) {
-			return []api.Coord{}
-		}
-	}
-
-	nextAlreadyVisitedCoords := append(alreadyVisitedCoords, from)
-	alreadyVisitedCoords = accessibleCoords(from.Up(), nextAlreadyVisitedCoords, sr)
-	alreadyVisitedCoords = accessibleCoords(from.Down(), nextAlreadyVisitedCoords, sr)
-	alreadyVisitedCoords = accessibleCoords(from.Left(), nextAlreadyVisitedCoords, sr)
-	alreadyVisitedCoords = accessibleCoords(from.Right(), nextAlreadyVisitedCoords, sr)
-	alreadyVisitedCoords = unique(alreadyVisitedCoords)
-	return alreadyVisitedCoords
-}
-
-func unique(intSlice []api.Coord) []api.Coord {
-	keys := make(map[api.Coord]bool)
-	var list []api.Coord
-	for _, entry := range intSlice {
-		if _, value := keys[entry]; !value {
-			keys[entry] = true
-			list = append(list, entry)
-		}
-	}
-	return list
 }

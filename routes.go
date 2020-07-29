@@ -20,21 +20,14 @@ var (
 	}
 )
 
-func Start(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	decoded := api.SnakeRequest{}
-	err := api.DecodeSnakeRequest(req, &decoded)
-	if err != nil {
-		log.Printf("Bad start request: %v", err)
-	}
-
+func Start(res http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	respond(res, api.StartResponse{
 		APIVersion: 1,
 		Author: "John Oram",
 		Color: "#75CEDD",
-		Head: "beluga",
-		Tail: "curled",
+		Head: "silly",
+		Tail: "fat-rattle",
 	})
-
 }
 
 func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
