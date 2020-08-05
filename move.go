@@ -19,6 +19,9 @@ var (
 		logic.KillOnlyOneChoice{},
 		logic.TrapFood{},
 		logic.GoMoreRoom{Ratio: 3},
+		logic.ShortestSnake{},
+		logic.AvoidOthers{},
+		logic.TrapFood{},
 		logic.ValidDirection{},
 	}
 	logics = map[logic.Responsibility]int{
@@ -32,6 +35,9 @@ var (
 		logic.GoMoreRoom{Ratio: 3}:                 20,
 		logic.TrapFood{}:                           1,
 		logic.ValidDirection{}:                     1,
+		logic.ShortestSnake{}: 10,
+		logic.AvoidOthers{}: 10,
+		logic.TrapFood{}:50,
 		// EAT THEIR LUNCH (force them to starve)
 	}
 	directionStrings = map[int]string{
@@ -45,6 +51,7 @@ var (
 		filters.IsUnknownFilter{},
 		filters.IsSolidFilter{},
 		filters.IsThreatenedFilter{},
+		filters.IsHazardFilter{},
 		filters.IsSmallSpace{},
 	}
 )
@@ -52,9 +59,7 @@ var (
 func isGoodDecision(choice int, request api.SnakeRequest) bool {
 	for _, filter := range decisionFilters {
 		ok, _ := filter.Allowed(choice, &request)
-
 		if !ok {
-			fmt.Printf("'%s' failed!\n", filter.Description())
 			return false
 		}
 	}
@@ -70,11 +75,42 @@ func reverseInts(input []int) []int {
 
 
 func move(request api.SnakeRequest) string {
+	unknown := directionStrings[api.UNKNOWN]
+
 	if len(request.OtherSnakes()) == 0 {
 		return move_singleplayer(request)
 	}
-	//return move_weighted(request)
-	return move_sequential_check(request)
+
+	s := move_weighted(request)
+	if s != unknown {
+		fmt.Printf("weighted: %s\n", s)
+		return s
+	}
+
+	s = move_safe_sequential_check(request)
+	if s != unknown {
+		fmt.Printf("safe: %s\n", s)
+		return s
+	}
+
+	s = move_unsafe_sequential_check(request)
+	if s != unknown {
+		fmt.Printf("unsafe: %s\n", s)
+		return s
+	}
+
+	s = move_random_empty(request)
+	fmt.Printf("yolo: %s\n", s)
+	return s
+}
+
+func move_random_empty(request api.SnakeRequest) string {
+	for s, c := range request.You.Head().AdjacentMap() {
+		if request.Board.IsEmpty(c) {
+			return s
+		}
+	}
+	return directionStrings[api.UNKNOWN]
 }
 
 func move_weighted(request api.SnakeRequest) string {
@@ -108,22 +144,25 @@ func move_weighted(request api.SnakeRequest) string {
 		}
 		return direction
 	}
-	return weightMap[weights[0]]
+	return directionStrings[api.UNKNOWN]
 }
 
-func move_sequential_check(request api.SnakeRequest) string {
-
+func move_safe_sequential_check(request api.SnakeRequest) string {
 	for _, l := range orderedLogics {
 		choice := l.Decision(&request)
 		if choice == api.UNKNOWN {
 			continue
 		}
-		fmt.Printf("considering going %s\n", api.DirToString(choice))
 		if !isGoodDecision(choice, request) {
 			continue
 		}
 		return directionStrings[choice]
 	}
+	return directionStrings[api.UNKNOWN]
+
+}
+
+func move_unsafe_sequential_check(request api.SnakeRequest) string {
 	for _, l := range orderedLogics {
 		choice := l.Decision(&request)
 		if choice == api.UNKNOWN {

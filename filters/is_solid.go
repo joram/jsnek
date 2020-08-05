@@ -8,7 +8,7 @@ func (isf IsSolidFilter) Description() string { return "is solid" }
 func (isf IsSolidFilter) Allowed(direction int, sr *api.SnakeRequest) (bool, error) {
 	coord, err := sr.You.Head().Offset(direction)
 	if err != nil {
-		return false, err
+		panic(err)
 	}
 	return sr.Board.IsEmpty(*coord), nil
 }

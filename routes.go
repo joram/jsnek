@@ -22,7 +22,7 @@ var (
 
 func Start(res http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	respond(res, api.StartResponse{
-		APIVersion: 1,
+		APIVersion: "0",
 		Author: "John Oram",
 		Color: "#75CEDD",
 		Head: "silly",

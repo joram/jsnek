@@ -1,5 +1,6 @@
 FROM golang:latest
 WORKDIR /go/src/github.com/joram/jsnek/
+RUN go get github.com/davecgh/go-spew/spew
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o jsnek .
 

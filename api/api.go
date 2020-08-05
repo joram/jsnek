@@ -61,6 +61,7 @@ type Board struct {
 	Height           int                      `json:"height"`
 	Width            int                      `json:"width"`
 	Food             []Coord                  `json:"food"`
+	Hazards          []Coord                  `json:"hazards"`
 	Snakes           []Snake                  `json:"snakes"`
 	Data             map[string]*DistanceData `json:"data"`
 	AbleToVisitCount map[string]int           `json:"able_to_visit"`
@@ -78,7 +79,7 @@ type SnakeRequest struct {
 }
 
 type StartResponse struct {
-	APIVersion int `json:"apiversion,omitempty"`
+	APIVersion string `json:"apiversion,omitempty"`
 	Author string `json:"author,omitempty"`
 	Color string `json:"color,omitempty"`
 	Head string `json:"head,omitempty"`
