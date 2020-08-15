@@ -15,13 +15,13 @@ func (ao AvoidOthers) Decision(sr *api.SnakeRequest) int {
 		return api.UNKNOWN
 	}
 
-	closestFood, err := sr.Board.ClosestFood(sr.You.Head())
+	closestFood, err := sr.Board.ClosestFood(sr.You.GetHead(), false)
 	if err != nil {
 		return api.UNKNOWN
 	}
 
-	d := sr.You.Head().NearestDirectionTo(*closestFood)
-	nextCoord, err := sr.You.Head().Offset(d)
+	d := sr.You.GetHead().NearestDirectionTo(*closestFood)
+	nextCoord, err := sr.You.GetHead().Offset(d)
 	if err != nil {
 		return api.UNKNOWN
 	}

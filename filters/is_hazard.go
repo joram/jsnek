@@ -6,7 +6,7 @@ type IsHazardFilter struct{}
 
 func (isf IsHazardFilter) Description() string { return "is hazard" }
 func (isf IsHazardFilter) Allowed(direction int, sr *api.SnakeRequest) (bool, error) {
-	coord, err := sr.You.Head().Offset(direction)
+	coord, err := sr.You.GetHead().Offset(direction)
 	if coord == nil {
 		return true, err
 	}

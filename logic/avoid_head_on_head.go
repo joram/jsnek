@@ -16,7 +16,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 	dangerCoords := []api.Coord{}
 	for _, snake := range sr.Board.Snakes {
 		if snake.ID != sr.You.ID && len(snake.Body) >= len(sr.You.Body) {
-			dangerCoords = append(dangerCoords, snake.Head().Adjacent()...)
+			dangerCoords = append(dangerCoords, snake.GetHead().Adjacent()...)
 		}
 	}
 
@@ -24,7 +24,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 	safeDirections := []string{}
 	avoidSquares := []api.Coord{}
 	avoidSquares = append(avoidSquares, dangerCoords...)
-	for dir, coord := range sr.You.Head().AdjacentMap() {
+	for dir, coord := range sr.You.GetHead().AdjacentMap() {
 		badCoord := false
 		for _, dangerCoord := range dangerCoords {
 			if coord.Equal(dangerCoord) {
@@ -41,7 +41,7 @@ func (ge AvoidHeadOnHead) Decision(sr *api.SnakeRequest) int {
 		}
 	}
 
-	// Could Head on Head
+	// Could GetHead on GetHead
 	if couldBeEaten && len(safeDirections) > 0 {
 		i := rand.Intn(len(safeDirections))
 		safeDir := safeDirections[i]

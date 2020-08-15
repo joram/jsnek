@@ -5,40 +5,25 @@ import (
 	"github.com/joram/jsnek/api"
 	"github.com/joram/jsnek/filters"
 	"github.com/joram/jsnek/logic"
-	"sort"
 )
 
 var (
 	orderedLogics = []logic.Responsibility{
+		logic.Topology{Weight: map[api.Coord]float64{} },
 		logic.OnlyOneChoice{},
 		logic.AvoidHeadOnHead{},
 		logic.AvoidThreatened{},
-		logic.GoEatOrthogonal{HungryHealth: 25},
-		logic.ShortestSnake{LengthCompensation: 3},
-		logic.GoToClosestTail{},
-		logic.KillOnlyOneChoice{},
-		logic.TrapFood{},
+		logic.GoEatOrthogonal{IgnoreHazardFood: false, HungryHealth: 40},
+		logic.EatWhenShortestSnake{IgnoreHazardFood: false, LengthCompensation: 3},
+		logic.GuaranteedKill{},
+		//logic.TrapFood{},
 		logic.GoMoreRoom{Ratio: 3},
-		logic.ShortestSnake{},
+		logic.GoToClosestTail{},
+		logic.GoEatOrthogonal{IgnoreHazardFood: true, HungryHealth: 40},
+		logic.EatWhenShortestSnake{IgnoreHazardFood: true, LengthCompensation: 3},
 		logic.AvoidOthers{},
 		logic.TrapFood{},
 		logic.ValidDirection{},
-	}
-	logics = map[logic.Responsibility]int{
-		logic.OnlyOneChoice{}:                      1000,
-		logic.AvoidHeadOnHead{}:                    10,
-		logic.AvoidThreatened{}:                    10,
-		logic.GoEatOrthogonal{HungryHealth: 25}:    1,
-		logic.ShortestSnake{LengthCompensation: 3}: 1,
-		logic.GoToClosestTail{}: 					10,
-		logic.KillOnlyOneChoice{}:                  1,
-		logic.GoMoreRoom{Ratio: 3}:                 20,
-		logic.TrapFood{}:                           1,
-		logic.ValidDirection{}:                     1,
-		logic.ShortestSnake{}: 10,
-		logic.AvoidOthers{}: 10,
-		logic.TrapFood{}:50,
-		// EAT THEIR LUNCH (force them to starve)
 	}
 	directionStrings = map[int]string{
 		api.UP:      "up",
@@ -47,17 +32,10 @@ var (
 		api.RIGHT:   "right",
 		api.UNKNOWN: "WFT!",
 	}
-	decisionFilters = []filters.DecisionFilter{
-		filters.IsUnknownFilter{},
-		filters.IsSolidFilter{},
-		filters.IsThreatenedFilter{},
-		filters.IsHazardFilter{},
-		filters.IsSmallSpace{},
-	}
 )
 
-func isGoodDecision(choice int, request api.SnakeRequest) bool {
-	for _, filter := range decisionFilters {
+func isGoodDecision(choice int, request api.SnakeRequest, filters []filters.DecisionFilter) bool {
+	for _, filter := range filters {
 		ok, _ := filter.Allowed(choice, &request)
 		if !ok {
 			return false
@@ -66,46 +44,58 @@ func isGoodDecision(choice int, request api.SnakeRequest) bool {
 	return true
 }
 
-func reverseInts(input []int) []int {
-	if len(input) == 0 {
-		return input
-	}
-	return append(reverseInts(input[1:]), input[0])
-}
-
 
 func move(request api.SnakeRequest) string {
 	unknown := directionStrings[api.UNKNOWN]
 
 	if len(request.OtherSnakes()) == 0 {
-		return move_singleplayer(request)
+		return moveSingleplayer(request)
 	}
 
-	s := move_weighted(request)
-	if s != unknown {
-		fmt.Printf("weighted: %s\n", s)
-		return s
+	possibleFilters := [][]filters.DecisionFilter{
+		{
+			filters.IsUnknownFilter{},
+			filters.IsSolidFilter{},
+			filters.IsThreatenedFilter{},
+			filters.IsHazardFilter{},
+			filters.IsSmallSpace{},
+		},
+		{
+			filters.IsUnknownFilter{},
+			filters.IsThreatenedFilter{},
+			filters.IsHazardFilter{},
+			filters.IsSmallSpace{},
+		},
+		{
+			filters.IsUnknownFilter{},
+			filters.IsThreatenedFilter{},
+			filters.IsHazardFilter{},
+		},
+		{
+			filters.IsUnknownFilter{},
+			filters.IsThreatenedFilter{},
+		},
+		{
+			filters.IsUnknownFilter{},
+		},
+		{},
+	}
+	for i, fs := range possibleFilters {
+		s, reason := attemptMove(request, orderedLogics, fs)
+		if s != unknown {
+			fmt.Printf("[%d]%s\t%s\n", i, s, reason)
+			return s
+		}
 	}
 
-	s = move_safe_sequential_check(request)
-	if s != unknown {
-		fmt.Printf("safe: %s\n", s)
-		return s
-	}
 
-	s = move_unsafe_sequential_check(request)
-	if s != unknown {
-		fmt.Printf("unsafe: %s\n", s)
-		return s
-	}
-
-	s = move_random_empty(request)
+	s := moveRandomEmpty(request)
 	fmt.Printf("yolo: %s\n", s)
 	return s
 }
 
-func move_random_empty(request api.SnakeRequest) string {
-	for s, c := range request.You.Head().AdjacentMap() {
+func moveRandomEmpty(request api.SnakeRequest) string {
+	for s, c := range request.You.GetHead().AdjacentMap() {
 		if request.Board.IsEmpty(c) {
 			return s
 		}
@@ -113,68 +103,27 @@ func move_random_empty(request api.SnakeRequest) string {
 	return directionStrings[api.UNKNOWN]
 }
 
-func move_weighted(request api.SnakeRequest) string {
-	directions := map[string]int{
-		directionStrings[api.UP]:    0,
-		directionStrings[api.DOWN]:  0,
-		directionStrings[api.LEFT]:  0,
-		directionStrings[api.RIGHT]: 0,
-	}
 
-	for l, weight := range logics {
-		choice := l.Decision(&request)
-		direction := directionStrings[choice]
-		directions[direction] += weight
-	}
-
-	weights := []int{}
-	weightMap := map[int]string{}
-	for k, v := range directions {
-		weightMap[v] = k
-		weights = append(weights, v)
-	}
-	sort.Ints(weights)
-	reverseInts(weights)
-
-	for _, weight := range weights {
-		direction := weightMap[weight]
-		directionInt := api.StringToDir(direction)
-		if !isGoodDecision(directionInt, request) {
-			continue
-		}
-		return direction
-	}
-	return directionStrings[api.UNKNOWN]
-}
-
-func move_safe_sequential_check(request api.SnakeRequest) string {
-	for _, l := range orderedLogics {
+func attemptMove(request api.SnakeRequest, logics []logic.Responsibility, filters []filters.DecisionFilter) (string, string) {
+	for _, l := range logics {
 		choice := l.Decision(&request)
 		if choice == api.UNKNOWN {
+			//fmt.Printf("not doing %s, unknown\n", l.Taunt())
 			continue
 		}
-		if !isGoodDecision(choice, request) {
+		if !isGoodDecision(choice, request, filters) {
+			//fmt.Printf("not doing %s, bad decision\n", l.Taunt())
 			continue
 		}
-		return directionStrings[choice]
+		return directionStrings[choice], l.Taunt()
 	}
-	return directionStrings[api.UNKNOWN]
+	return directionStrings[api.UNKNOWN], "unknown"
 
 }
 
-func move_unsafe_sequential_check(request api.SnakeRequest) string {
-	for _, l := range orderedLogics {
-		choice := l.Decision(&request)
-		if choice == api.UNKNOWN {
-			continue
-		}
-		return directionStrings[choice]
-	}
-	return "up"
-}
 
-func move_singleplayer(request api.SnakeRequest) string {
-	head := request.You.Head()
+func moveSingleplayer(request api.SnakeRequest) string {
+	head := request.You.GetHead()
 
 
 	if head.Y == request.Board.Height - 1 {

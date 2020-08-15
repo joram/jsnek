@@ -1,6 +1,6 @@
 package api
 
-func (s *Snake) Head() Coord {
+func (s *Snake) GetHead() Coord {
 	return s.Body[0]
 }
 

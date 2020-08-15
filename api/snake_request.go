@@ -2,7 +2,7 @@ package api
 
 func (sr SnakeRequest) MyEmptyAdjacents() []Coord {
 	var choices []Coord
-	for _, a := range sr.You.Head().Adjacent() {
+	for _, a := range sr.You.GetHead().Adjacent() {
 		if sr.Board.IsEmpty(a) {
 			choices = append(choices, a)
 		}

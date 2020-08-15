@@ -3,7 +3,6 @@ package logic
 import "github.com/joram/jsnek/api"
 
 type GoToClosestTail struct {
-	HungryHealth int
 }
 
 func (ge GoToClosestTail) Taunt() string {
@@ -11,10 +10,10 @@ func (ge GoToClosestTail) Taunt() string {
 }
 
 func (ge GoToClosestTail) Decision(sr *api.SnakeRequest) int {
-	closestTail := sr.Board.ClosestTail(sr.You.Head())
+	closestTail := sr.Board.ClosestTail(sr.You.GetHead())
 
-	d := sr.You.Head().NearestDirectionTo(closestTail)
-	nextCoord, err := sr.You.Head().Offset(d)
+	d := sr.You.GetHead().NearestDirectionTo(closestTail)
+	nextCoord, err := sr.You.GetHead().Offset(d)
 	if err != nil {
 		return api.UNKNOWN
 	}

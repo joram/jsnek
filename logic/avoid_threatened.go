@@ -16,11 +16,11 @@ func (at AvoidThreatened) Decision(sr *api.SnakeRequest) int {
 		if len(snake.Body) < len(sr.You.Body) {
 			continue
 		}
-		threatenedSquares = append(threatenedSquares, snake.Head().Adjacent()...)
+		threatenedSquares = append(threatenedSquares, snake.GetHead().Adjacent()...)
 	}
 
 	var potentialCoordinates []api.Coord
-	for _, potentialCoord := range sr.You.Head().Adjacent() {
+	for _, potentialCoord := range sr.You.GetHead().Adjacent() {
 		threatened := false
 		for _, threatenedSquare := range threatenedSquares {
 			if potentialCoord.Equal(threatenedSquare) {
@@ -35,7 +35,7 @@ func (at AvoidThreatened) Decision(sr *api.SnakeRequest) int {
 	}
 
 	if len(potentialCoordinates) == 1 {
-		return sr.You.Head().DirectionTo(potentialCoordinates[0])
+		return sr.You.GetHead().DirectionTo(potentialCoordinates[0])
 	}
 
 	return api.UNKNOWN

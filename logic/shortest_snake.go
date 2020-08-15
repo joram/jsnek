@@ -5,15 +5,16 @@ import (
 	"github.com/joram/jsnek/util"
 )
 
-type ShortestSnake struct {
+type EatWhenShortestSnake struct {
+	IgnoreHazardFood   bool
 	LengthCompensation int
 }
 
-func (ss ShortestSnake) Taunt() string {
+func (ss EatWhenShortestSnake) Taunt() string {
 	return "EATING (Shortest Snake)"
 }
 
-func (ss ShortestSnake) Decision(sr *api.SnakeRequest) int {
+func (ss EatWhenShortestSnake) Decision(sr *api.SnakeRequest) int {
 	longestSnakeLength := -1
 	for _, snake := range sr.OtherSnakes() {
 		longestSnakeLength = util.Max(longestSnakeLength, len(snake.Body))
@@ -23,5 +24,5 @@ func (ss ShortestSnake) Decision(sr *api.SnakeRequest) int {
 		return api.UNKNOWN
 	}
 
-	return GoEatOrthogonal{100}.Decision(sr)
+	return GoEatOrthogonal{ss.IgnoreHazardFood, 100, }.Decision(sr)
 }

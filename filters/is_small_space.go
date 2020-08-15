@@ -1,7 +1,6 @@
 package filters
 
 import (
-	"fmt"
 	"github.com/joram/jsnek/api"
 )
 
@@ -14,7 +13,7 @@ func (iss IsSmallSpace) Description() string { return "is small space" }
 func (iss IsSmallSpace) Allowed(direction int, sr *api.SnakeRequest) (bool, error) {
 
 	emptySurroundingCoords := 0
-	for _, a := range sr.You.Head().SurroundingCoords() {
+	for _, a := range sr.You.GetHead().SurroundingCoords() {
 		if sr.Board.IsEmpty(a){
 			emptySurroundingCoords += 1
 		}
@@ -24,10 +23,10 @@ func (iss IsSmallSpace) Allowed(direction int, sr *api.SnakeRequest) (bool, erro
 	}
 
 	coords := map[int]int{
-		api.UP: len(accessibleCoords(sr.You.Head().Up(), []api.Coord{}, sr)),
-		api.DOWN: len(accessibleCoords(sr.You.Head().Down(), []api.Coord{}, sr)),
-		api.LEFT: len(accessibleCoords(sr.You.Head().Left(), []api.Coord{}, sr)),
-		api.RIGHT: len(accessibleCoords(sr.You.Head().Right(), []api.Coord{}, sr)),
+		api.UP: len(accessibleCoords(sr.You.GetHead().Up(), []api.Coord{}, sr)),
+		api.DOWN: len(accessibleCoords(sr.You.GetHead().Down(), []api.Coord{}, sr)),
+		api.LEFT: len(accessibleCoords(sr.You.GetHead().Left(), []api.Coord{}, sr)),
+		api.RIGHT: len(accessibleCoords(sr.You.GetHead().Right(), []api.Coord{}, sr)),
 	}
 
 	sum := 0
@@ -38,8 +37,11 @@ func (iss IsSmallSpace) Allowed(direction int, sr *api.SnakeRequest) (bool, erro
 			goodPaths += 1
 		}
 	}
+	if goodPaths == 0 {
+		goodPaths = 1
+	}
 	avg := sum/goodPaths
-	fmt.Printf("up: %d, down:%d, left:%d, right:%d, avg:%d\n", coords[api.UP], coords[api.DOWN], coords[api.LEFT], coords[api.RIGHT], avg)
+	//fmt.Printf("up: %d, down:%d, left:%d, right:%d, avg:%d\n", coords[api.UP], coords[api.DOWN], coords[api.LEFT], coords[api.RIGHT], avg)
 	if float64(coords[direction])/float64(avg) < float64(0.8) {
 		return false, nil
 	}

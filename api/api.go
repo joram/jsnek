@@ -55,6 +55,9 @@ type Snake struct {
 	Name   string  `json:"name"`
 	Health int     `json:"health"`
 	Body   []Coord `json:"body"`
+	Head   Coord   `json:"head"`
+	Length int     `json:"length"`
+	Shout  string  `json:"shout"`
 }
 
 type Board struct {

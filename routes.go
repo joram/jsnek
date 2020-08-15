@@ -1,28 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"github.com/joram/jsnek/api"
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 )
 
 var (
-	games = map[string][]api.SnakeRequest{
-		"example": []api.SnakeRequest{{
-			Game: api.Game{ID: "123"},
-			Turn: 1,
-			You:  exampleBoard.Snakes[0],
-		}},
-	}
+	games = map[string][]api.SnakeRequest{}
 )
 
 func Start(res http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	respond(res, api.StartResponse{
-		APIVersion: "0",
+		APIVersion: "1",
 		Author: "John Oram",
 		Color: "#75CEDD",
 		Head: "silly",
@@ -31,7 +23,6 @@ func Start(res http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 }
 
 func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	start := time.Now()
 	sr := api.SnakeRequest{}
 	err := api.DecodeSnakeRequest(req, &sr)
 	if err != nil {
@@ -45,8 +36,6 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 
 	response := api.MoveResponse{Move: move(sr)}
-	delta := time.Since(start)
-	fmt.Printf("took %s\n", delta)
 	respond(res, response)
 }
 

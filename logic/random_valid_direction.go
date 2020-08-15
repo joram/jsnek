@@ -20,5 +20,5 @@ func (ec ValidDirection) Decision(sr *api.SnakeRequest) int {
 	}
 	i := rand.Intn(len(choices))
 	nextCoord := choices[i]
-	return sr.You.Head().DirectionTo(nextCoord)
+	return sr.You.GetHead().DirectionTo(nextCoord)
 }

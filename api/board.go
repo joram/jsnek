@@ -37,7 +37,11 @@ func (b *Board) IsEmpty(c Coord) bool {
 	return true
 }
 
-func (b *Board) ClosestFood(c Coord) (*Coord, error) {
+func (b *Board) IsSolid(c Coord) bool {
+	return !b.IsEmpty(c)
+}
+
+func (b *Board) ClosestFood(c Coord, ignoreHazard bool) (*Coord, error) {
 	foundFood := false
 	closestFood := Coord{}
 	closestDist := float64(-1)
@@ -45,9 +49,22 @@ func (b *Board) ClosestFood(c Coord) (*Coord, error) {
 	for _, food := range b.Food {
 		dist := c.OrthogonalDistance(food)
 		if !foundFood || dist < closestDist {
-			closestFood = food
-			closestDist = dist
-			foundFood = true
+
+			ignore := false
+			if ignoreHazard {
+				for _, hazardCoord := range b.Hazards {
+					if hazardCoord.Equal(food) {
+						ignore = true
+						break
+					}
+				}
+			}
+
+			if !ignore {
+				closestFood = food
+				closestDist = dist
+				foundFood = true
+			}
 		}
 	}
 
@@ -105,7 +122,7 @@ func (b *Board) PopulateDistances(you Snake) {
 		"down":  0,
 	}
 
-	left := you.Head().Left()
+	left := you.GetHead().Left()
 	if b.IsEmpty(left) {
 		meLeft := &DistanceData{}
 		meLeft.Calculate([]Coord{left}, b)
@@ -113,7 +130,7 @@ func (b *Board) PopulateDistances(you Snake) {
 		b.AbleToVisitCount["left"] = meLeft.Count
 	}
 
-	right := you.Head().Right()
+	right := you.GetHead().Right()
 	if b.IsEmpty(right) {
 		meRight := &DistanceData{}
 		meRight.Calculate([]Coord{right}, b)
@@ -121,7 +138,7 @@ func (b *Board) PopulateDistances(you Snake) {
 		b.AbleToVisitCount["right"] = meRight.Count
 	}
 
-	up := you.Head().Up()
+	up := you.GetHead().Up()
 	if b.IsEmpty(up) {
 		meUp := &DistanceData{}
 		meUp.Calculate([]Coord{up}, b)
@@ -129,7 +146,7 @@ func (b *Board) PopulateDistances(you Snake) {
 		b.AbleToVisitCount["up"] = meUp.Count
 	}
 
-	down := you.Head().Down()
+	down := you.GetHead().Down()
 	if b.IsEmpty(down) {
 		meDown := &DistanceData{}
 		meDown.Calculate([]Coord{down}, b)
@@ -139,6 +156,6 @@ func (b *Board) PopulateDistances(you Snake) {
 
 	for _, snake := range b.Snakes {
 		b.Data[snake.ID] = &DistanceData{}
-		b.Data[snake.ID].Calculate(snake.Head().Adjacent(), b)
+		b.Data[snake.ID].Calculate(snake.GetHead().Adjacent(), b)
 	}
 }

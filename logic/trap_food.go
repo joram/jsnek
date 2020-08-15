@@ -24,7 +24,7 @@ func (ge TrapFood) isHoneyPotted(sr *api.SnakeRequest, food api.Coord) bool {
 }
 
 func (ge TrapFood) Decision(sr *api.SnakeRequest) int {
-	orderedFood := sr.Board.OrderedClosestFood(sr.You.Head())
+	orderedFood := sr.Board.OrderedClosestFood(sr.You.GetHead())
 
 	for _, food := range orderedFood {
 		if ge.isHoneyPotted(sr, food) {
@@ -37,7 +37,7 @@ func (ge TrapFood) Decision(sr *api.SnakeRequest) int {
 		closestDist := float64(-1)
 		for _, coord := range coords {
 			if sr.Board.IsEmpty(coord) {
-				dist := sr.You.Head().OrthogonalDistance(coord)
+				dist := sr.You.GetHead().OrthogonalDistance(coord)
 				if !foundClosestToFill || dist <= closestDist {
 					if sr.Board.IsEmpty(coord) {
 						closestToFill = coord
@@ -50,11 +50,11 @@ func (ge TrapFood) Decision(sr *api.SnakeRequest) int {
 		}
 
 		if len(toFill) > 2 {
-			return sr.You.Head().DirectionTo(closestToFill)
+			return sr.You.GetHead().DirectionTo(closestToFill)
 		}
 
 		validChoices := []api.Coord{}
-		for _, coord := range sr.You.Head().Adjacent() {
+		for _, coord := range sr.You.GetHead().Adjacent() {
 			toAvoid := false
 			for _, tfCoord := range toFill {
 				if tfCoord.Equal(coord) {
@@ -69,7 +69,7 @@ func (ge TrapFood) Decision(sr *api.SnakeRequest) int {
 		if len(validChoices) >= 1 {
 			i := rand.Intn(len(validChoices))
 			nextCoord := validChoices[i]
-			return sr.You.Head().DirectionTo(nextCoord)
+			return sr.You.GetHead().DirectionTo(nextCoord)
 		}
 	}
 	return api.UNKNOWN

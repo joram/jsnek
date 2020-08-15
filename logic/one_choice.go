@@ -12,7 +12,7 @@ func (ooc OnlyOneChoice) Decision(sr *api.SnakeRequest) int {
 	// if there is only one choice, return that choice
 	choices := sr.MyEmptyAdjacents()
 	if len(choices) == 1 {
-		return sr.You.Head().DirectionTo(choices[0])
+		return sr.You.GetHead().DirectionTo(choices[0])
 	}
 	return api.UNKNOWN
 }
