@@ -9,13 +9,12 @@ import (
 
 var (
 	orderedLogics = []logic.Responsibility{
-		logic.Topology{Weight: map[api.Coord]float64{} },
 		logic.OnlyOneChoice{},
-		logic.AvoidHeadOnHead{},
-		logic.AvoidThreatened{},
+		//logic.AvoidHeadOnHead{},
+		//logic.AvoidThreatened{},
+		logic.GuaranteedKill{},
 		logic.GoEatOrthogonal{IgnoreHazardFood: false, HungryHealth: 40},
 		logic.EatWhenShortestSnake{IgnoreHazardFood: false, LengthCompensation: 3},
-		logic.GuaranteedKill{},
 		//logic.TrapFood{},
 		logic.GoMoreRoom{Ratio: 3},
 		logic.GoToClosestTail{},
@@ -24,6 +23,7 @@ var (
 		logic.AvoidOthers{},
 		logic.TrapFood{},
 		logic.ValidDirection{},
+		logic.Topology{Weight: map[api.Coord]float64{} },
 	}
 	directionStrings = map[int]string{
 		api.UP:      "up",
@@ -38,9 +38,11 @@ func isGoodDecision(choice int, request api.SnakeRequest, filters []filters.Deci
 	for _, filter := range filters {
 		ok, _ := filter.Allowed(choice, &request)
 		if !ok {
+			fmt.Printf("not going %s, because %s\n", directionStrings[choice], filter.Description())
 			return false
 		}
 	}
+	fmt.Printf("%s is ok\n", directionStrings[choice])
 	return true
 }
 
@@ -53,6 +55,14 @@ func move(request api.SnakeRequest) string {
 	}
 
 	possibleFilters := [][]filters.DecisionFilter{
+		{
+			filters.IsUnknownFilter{},
+			filters.IsSolidFilter{},
+			filters.IsThreatenedFilter{},
+			filters.IsHazardFilter{},
+			filters.IsSmallSpace{},
+			filters.IsEdge{},
+		},
 		{
 			filters.IsUnknownFilter{},
 			filters.IsSolidFilter{},
@@ -80,6 +90,8 @@ func move(request api.SnakeRequest) string {
 		},
 		{},
 	}
+
+
 	for i, fs := range possibleFilters {
 		s, reason := attemptMove(request, orderedLogics, fs)
 		if s != unknown {
@@ -107,12 +119,8 @@ func moveRandomEmpty(request api.SnakeRequest) string {
 func attemptMove(request api.SnakeRequest, logics []logic.Responsibility, filters []filters.DecisionFilter) (string, string) {
 	for _, l := range logics {
 		choice := l.Decision(&request)
-		if choice == api.UNKNOWN {
-			//fmt.Printf("not doing %s, unknown\n", l.Taunt())
-			continue
-		}
+		fmt.Printf("%s thinks %s?\n", l.Taunt(), directionStrings[choice])
 		if !isGoodDecision(choice, request, filters) {
-			//fmt.Printf("not doing %s, bad decision\n", l.Taunt())
 			continue
 		}
 		return directionStrings[choice], l.Taunt()

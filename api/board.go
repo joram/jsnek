@@ -18,22 +18,16 @@ func (b *Board) IsEmpty(c Coord) bool {
 		return false
 	}
 
-	var occupied []Coord
 	for _, snake := range b.Snakes {
 		for _, coord := range snake.Body {
 			if coord.Equal(snake.Tail()) && !snake.JustAte() {
 				continue
 			}
-			occupied = append(occupied, coord)
+			if coord.Equal(c) {
+				return false
+			}
 		}
 	}
-
-	for _, o := range occupied {
-		if o.Equal(c) {
-			return false
-		}
-	}
-
 	return true
 }
 

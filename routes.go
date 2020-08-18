@@ -6,20 +6,33 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"sync"
 )
 
 var (
 	games = map[string][]api.SnakeRequest{}
+	gamesLock = sync.Mutex{}
 )
 
 func Start(res http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	respond(res, api.StartResponse{
-		APIVersion: "1",
+		APIVersion: "0",
 		Author: "John Oram",
 		Color: "#75CEDD",
 		Head: "silly",
 		Tail: "fat-rattle",
 	})
+}
+
+func saveGameState(sr api.SnakeRequest) {
+	gamesLock.Lock()
+	defer gamesLock.Unlock()
+
+	_, exists := games[sr.Game.ID]
+	if !exists {
+		games[sr.Game.ID] = []api.SnakeRequest{}
+	}
+	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
 }
 
 func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
@@ -29,11 +42,7 @@ func Move(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		log.Printf("Bad move request: %v", err)
 	}
 
-	_, exists := games[sr.Game.ID]
-	if !exists {
-		games[sr.Game.ID] = []api.SnakeRequest{}
-	}
-	games[sr.Game.ID] = append(games[sr.Game.ID], sr)
+	saveGameState(sr)
 
 	response := api.MoveResponse{Move: move(sr)}
 	respond(res, response)
