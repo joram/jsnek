@@ -14,7 +14,7 @@ func (ie IsEdge) Allowed(direction int, sr *api.SnakeRequest) (bool, error) {
 	if coord.X == 0 {
 		return false, nil
 	}
-	if coord.y == 0 {
+	if coord.Y == 0 {
 		return false, nil
 	}
 	if coord.X+1 == sr.Board.Width {
