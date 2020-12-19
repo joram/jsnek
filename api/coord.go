@@ -7,8 +7,8 @@ import (
 
 func (c Coord) AdjacentMap() map[string]Coord {
 	return map[string]Coord{
-		"down":  {c.X + 0, c.Y + 1},
-		"up":    {c.X + 0, c.Y - 1},
+		"down":  {c.X + 0, c.Y - 1},
+		"up":    {c.X + 0, c.Y + 1},
 		"right": {c.X + 1, c.Y + 0},
 		"left":  {c.X - 1, c.Y + 0},
 	}
@@ -53,16 +53,16 @@ func (c Coord) Equal(other Coord) bool {
 
 func (c Coord) Left() Coord  { return Coord{X: c.X - 1, Y: c.Y} }
 func (c Coord) Right() Coord { return Coord{X: c.X + 1, Y: c.Y} }
-func (c Coord) Up() Coord    { return Coord{X: c.X, Y: c.Y - 1} }
-func (c Coord) Down() Coord  { return Coord{X: c.X, Y: c.Y + 1} }
+func (c Coord) Up() Coord    { return Coord{X: c.X, Y: c.Y + 1} }
+func (c Coord) Down() Coord  { return Coord{X: c.X, Y: c.Y - 1} }
 
 func (c Coord) DirectionTo(other Coord) int {
 	xd := other.X - c.X
 	yd := other.Y - c.Y
-	if xd == +0 && yd == -1 {
+	if xd == +0 && yd == +1 {
 		return UP
 	}
-	if xd == +0 && yd == +1 {
+	if xd == +0 && yd == -1 {
 		return DOWN
 	}
 	if xd == -1 && yd == +0 {
@@ -76,10 +76,10 @@ func (c Coord) DirectionTo(other Coord) int {
 
 func (c Coord) Offset(d int) (*Coord, error) {
 	if d == UP {
-		return &Coord{c.X, c.Y - 1}, nil
+		return &Coord{c.X, c.Y + 1}, nil
 	}
 	if d == DOWN {
-		return &Coord{c.X, c.Y + 1}, nil
+		return &Coord{c.X, c.Y - 1}, nil
 	}
 	if d == LEFT {
 		return &Coord{c.X - 1, c.Y}, nil
@@ -103,9 +103,9 @@ func (c Coord) NearestDirectionTo(other Coord) int {
 		return LEFT
 	}
 	if yd > 0 {
-		return DOWN
+		return UP
 	}
-	return UP
+	return DOWN
 }
 
 func (c Coord) OrthogonalDistance(other Coord) float64 {
